@@ -45,3 +45,4 @@ Ishtirokchi loyihasi **ataylab xatoli**. `organizer/run_checks.py` uning talabga
 ## Hujjatlarni qayta yaratish
 
 `tools/build_materials.py` SVG va BPMN XMLni yaratadi. `tools/build_pdf.py` PDFni yaratadi (faqat muallif uchun `reportlab` kerak). `tools/package.py` tarqatish arxivlarini yaratadi. Bu vositalar o'quvchi loyihasini ishlatish uchun kerak emas.
+# cardhubdemo
