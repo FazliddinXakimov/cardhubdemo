@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1100" viewBox="0 0 900 1100" role="img" aria-labelledby="title desc">
+<title id="title">CardLab: pul o‘tkazish BPMN jarayoni</title>
+<desc id="desc">Kiritma va karta holati tekshiriladi, komissiya hisoblanadi, balans yetarli bo‘lsa o‘tkazma saqlanadi, aks holda rad etiladi.</desc>
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4.5 L0,9 Z" fill="#183044"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<polyline points="230,56 230,90" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline points="230,162 230,214" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline points="230,294 230,356" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<text x="265.0" y="334.46" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">Ha</text>
+<polyline points="270,254 690,254 690,622" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<path d="M283,246 l10,16" stroke="#183044" stroke-width="2.3"/>
+<text x="435.0" y="239.46" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">Yo&#x27;q</text>
+<polyline points="230,436 230,490" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<text x="265.0" y="466.46" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">Ha</text>
+<polyline points="270,396 810,396 810,658 726,658" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<path d="M283,388 l10,16" stroke="#183044" stroke-width="2.3"/>
+<text x="435.0" y="381.46" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">Yo&#x27;q</text>
+<polyline points="230,562 230,618" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline points="230,698 230,756" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<text x="265.0" y="730.46" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">Ha</text>
+<polyline points="270,658 654,658" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<path d="M283,650 l10,16" stroke="#183044" stroke-width="2.3"/>
+<text x="435.0" y="643.46" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">Yo&#x27;q</text>
+<polyline points="230,828 230,882" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline points="230,954 230,1012" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline points="690,694 690,756" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<polyline points="690,852 690,918" fill="none" stroke="#183044" stroke-width="2.3" marker-end="url(#arrow)"/>
+<circle cx="230.0" cy="38.0" r="16.0" fill="white" stroke="#183044" stroke-width="2.5"/>
+<text x="350.0" y="45.46" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">Boshlash</text>
+<rect x="80" y="90" width="300" height="72" rx="12" fill="#EDF8F7" stroke="#183044" stroke-width="2.3"/>
+<text x="230.0" y="120.28" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#183044">Yuboruvchi, oluvchi va</text>
+<text x="230.0" y="146.68" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#183044">summani kiritish</text>
+<polygon points="230.0,214 270,254.0 230.0,294 190,254.0" fill="#FFF7DF" stroke="#183044" stroke-width="2.3"/>
+<text x="230.0" y="263.18" text-anchor="middle" font-family="Arial, sans-serif" font-size="27" fill="#183044">X</text>
+<text x="95.0" y="245.06" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">Summa va IDlar</text>
+<text x="95.0" y="267.86" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">to&#x27;g&#x27;rimi? [R1]</text>
+<polygon points="230.0,356 270,396.0 230.0,436 190,396.0" fill="#FFF7DF" stroke="#183044" stroke-width="2.3"/>
+<text x="230.0" y="405.18" text-anchor="middle" font-family="Arial, sans-serif" font-size="27" fill="#183044">X</text>
+<text x="95.0" y="387.06" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">Ikkala karta</text>
+<text x="95.0" y="409.86" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">faolmi? [R2]</text>
+<rect x="80" y="490" width="300" height="72" rx="12" fill="#EDF8F7" stroke="#183044" stroke-width="2.3"/>
+<text x="230.0" y="520.28" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#183044">Komissiya va jami</text>
+<text x="230.0" y="546.68" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#183044">yechimni hisoblash</text>
+<polygon points="230.0,618 270,658.0 230.0,698 190,658.0" fill="#FFF7DF" stroke="#183044" stroke-width="2.3"/>
+<text x="230.0" y="667.18" text-anchor="middle" font-family="Arial, sans-serif" font-size="27" fill="#183044">X</text>
+<text x="95.0" y="649.0600000000001" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">Balans jami</text>
+<text x="95.0" y="671.86" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">yechimga yetadimi?</text>
+<rect x="80" y="756" width="300" height="72" rx="12" fill="#EDF8F7" stroke="#183044" stroke-width="2.3"/>
+<text x="230.0" y="786.28" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#183044">Ikkala balansni</text>
+<text x="230.0" y="812.68" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#183044">yangilash</text>
+<rect x="80" y="882" width="300" height="72" rx="12" fill="#EDF8F7" stroke="#183044" stroke-width="2.3"/>
+<text x="230.0" y="912.28" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#183044">Bitta tarix yozuvi</text>
+<text x="230.0" y="938.68" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#183044">yaratish va saqlash</text>
+<circle cx="230.0" cy="1030.0" r="16.0" fill="white" stroke="#183044" stroke-width="5"/>
+<text x="355.0" y="1037.46" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#183044">Bajarildi</text>
+<polygon points="690.0,622 726,658.0 690.0,694 654,658.0" fill="#FFF7DF" stroke="#183044" stroke-width="2.3"/>
+<text x="690.0" y="667.18" text-anchor="middle" font-family="Arial, sans-serif" font-size="27" fill="#183044">X</text>
+<rect x="540" y="756" width="300" height="96" rx="12" fill="#FFF1EE" stroke="#AD3F3F" stroke-width="2.3"/>
+<text x="690.0" y="785.08" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#AD3F3F">Sababni ko&#x27;rsatish</text>
+<text x="690.0" y="811.48" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#AD3F3F">Holat o&#x27;zgarmaydi</text>
+<text x="690.0" y="837.88" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#AD3F3F">[R3]</text>
+<circle cx="690.0" cy="936.0" r="16.0" fill="white" stroke="#AD3F3F" stroke-width="5"/>
+<text x="810.0" y="943.46" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#AD3F3F">Rad etildi</text>
+</svg>

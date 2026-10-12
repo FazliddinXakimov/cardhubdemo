@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: cardlab
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz

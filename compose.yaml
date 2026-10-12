@@ -1,0 +1,15 @@
+name: cardlab
+services:
+  web:
+    build: .
+    image: cardlab-web:local
+    container_name: cardlab-web
+    ports:
+      - "127.0.0.1:${CARDLAB_PORT:-5057}:8000"
+    volumes:
+      - cardlab-data:/app/data
+    restart: unless-stopped
+    init: true
+
+volumes:
+  cardlab-data:

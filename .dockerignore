@@ -1,0 +1,8 @@
+**
+!Dockerfile
+!participant/
+!participant/**
+participant/**/__pycache__/
+participant/**/*.pyc
+participant/**/data/
+participant/**/.DS_Store
