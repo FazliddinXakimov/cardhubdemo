@@ -29,6 +29,7 @@ def package():
             for path in sorted((ROOT / folder).rglob("*")):
                 if path.is_file() and path.suffix in (".md", ".py") and "__pycache__" not in path.parts and "data" not in path.parts:
                     archive.write(path, "cardlab-organizer/" + str(path.relative_to(ROOT)))
+        archive.write(ROOT / "organizer" / "teams.example.csv", "cardlab-organizer/organizer/teams.example.csv")
     with ZipFile(participant) as archive:
         expected = {"cardlab-participant/" + name for name in PARTICIPANT_FILES}
         assert set(archive.namelist()) == expected

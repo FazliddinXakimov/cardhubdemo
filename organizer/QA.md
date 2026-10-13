@@ -1,5 +1,22 @@
 # Tayyor to'plam tekshiruvi
 
+## Guruhlarga tarqatish va yakuniy baholash — 2026-10-13
+
+Python 3.14.6 muhitida quyidagilar tekshirildi:
+
+- `python3 -m unittest discover -s organizer -p 'test_*.py' -v`: 24 ta test o'tdi.
+- Ishtirokchining 3 ta boshlang'ich smoke testi o'tdi; `bank.py`dagi mashq xatolari saqlandi.
+- Har jamoa ZIPida 14 ta fayl: 12 ta umumiy material, `TEAM.json` va `TEAM.md`. Nomlangan hisobot, alohida ID va bir xil boshlang'ich kod tasdiqlandi; tashkilotchi yechimi arxivlarga kirmadi.
+- Tarqatilgan tashkilotchi ZIPi yangi papkaga ochildi; uning vositalari bilan 3 jamoa to'plami yaratildi, topshiriq papkalariga ochildi va natijalar chiqarildi. Uchalasida ham 0/70, regressiya o'tgan va hakam bahosi kutilayotgan holat qaytdi.
+- Etalon 70/70 va to'liq hakam bahosi bilan 100/100; xatoli starter 0/70. Bo'sh hakam bahosi bilan aniq nol baho farqlandi.
+- Sintaksis xatosi, cheksiz siklning vaqt limiti, topshirilmagan loyiha va mos kelmaydigan jamoa IDsi keyingi jamoani tekshirishga to'sqinlik qilmadi.
+- Dastlabki topshiriq fayllari o'zgarmadi; loyiha ichidagi qo'shimcha `data/` Python moduli vaqtinchalik nusxadan muvaffaqiyatli yuklandi.
+- Teng ballning funksional va hisobot ballari orqali tartiblanishi, teng o'rin, regressiya buzilganda yakuniy o'rin berilmasligi, noto'g'ri baholarni rad etish va mavjud natijalar ustiga yozmaslik tekshirildi.
+
+Bu tekshiruvlar macOSda bajarildi. Yangi tashkilotchi vositalari Windowsda alohida sinovdan o'tkazilmagan.
+
+## Boshlang'ich to'plam
+
 Tekshirilgan variant: CardLab BT v1.0, Python. Sana: 2026-10-09.
 
 | Tekshiruv | Natija |

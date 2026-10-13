@@ -1,5 +1,7 @@
 # Jamoa hisoboti
 
+Jamoa IDsi:
+
 Jamoa nomi:
 
 Ishtirokchilar:

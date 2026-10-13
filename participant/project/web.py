@@ -86,7 +86,13 @@ def page(session):
         <h1>Kartalar bilan <span>tajriba qiling.</span></h1>
         <p>Amaliyotlarni sinang, natijani BT bilan solishtiring va Python kodidagi xatolarni toping.</p></div>
         <div class="timebox"><strong>120<span> daqiqa</span></strong><small>2–3 kishilik jamoa uchun</small></div></section>
-        <div class="lab-note"><span class="note-symbol">i</span><p><strong>Bu — xatolarni topish mashqi.</strong> Natijalar ataylab noto‘g‘ri chiqishi mumkin. Faqat demo mablag‘ ishlatiladi.</p><span class="mode-label">XATOLI LOYIHA</span></div>
+        <section class="lab-tools" aria-label="Topshiriq materiallari va sinov holati">
+          <a class="lab-tool" href="/materials/BT.pdf" target="_blank" rel="noopener"><span class="tool-symbol" aria-hidden="true">↗</span><span><strong>Biznes talablar</strong><small>PDF · 20 ta ssenariy</small></span></a>
+          <a class="lab-tool" href="/materials/transfer-bpmn.svg" target="_blank" rel="noopener"><span class="tool-symbol" aria-hidden="true">↗</span><span><strong>BPMN jarayoni</strong><small>Pul o'tkazish chizmasi</small></span></a>
+          <form method="post" action="/action">{field('reopen', csrf)}<button class="lab-tool" type="submit"><span class="tool-symbol" aria-hidden="true">↻</span><span><strong>Dasturni qayta ochish</strong><small>Saqlangan holatni yuklash</small></span></button></form>
+          <form method="post" action="/action">{field('reset', csrf)}<button class="lab-tool" type="submit"><span class="tool-symbol" aria-hidden="true">⟲</span><span><strong>Boshidan boshlash</strong><small>Demo holatini tozalash</small></span></button></form>
+        </section>
+        <div class="lab-note"><span class="note-symbol">i</span><p><strong>Har jamoa o‘z loyiha nusxasida ishlaydi.</strong> Tashkilotchi bergan ZIPni oching, kodni tuzating va loyiha, testlar hamda hisobotni topshiring. Yakunda har bir jamoa alohida baholanadi: 70 ball avtomatik tekshiruv + 30 ball hakam bahosi. Ushbu demo natijalari ataylab noto‘g‘ri chiqishi mumkin; faqat demo mablag‘ ishlatiladi.</p><span class="mode-label">XATOLI LOYIHA</span></div>
         {alert}
         <section aria-labelledby="cards-title"><div class="section-heading"><h2 id="cards-title">Mening kartalarim <span>03</span></h2>
           <p>Jami balans <strong>{money(total)} so'm</strong></p></div>
@@ -107,12 +113,6 @@ def page(session):
             </form></article></section>
         <section class="panel history-panel"><div class="section-heading"><h2>Amaliyotlar tarixi <span>{len(history):02}</span></h2><p>Eng yangi amaliyot birinchi · Toshkent vaqti</p></div>
           <div class="table-scroll"><table><thead><tr><th>AMALIYOT</th><th>YO'NALISH</th><th class="numeric">SUMMA</th><th class="numeric">KOMISSIYA</th><th>VAQT</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div></section>
-        <section class="resources"><div><span class="resource-label">TOPSHIRIQ MATERIALLARI</span><h2>Avval talabni tushuning.</h2><p>BT, BPMN va qabul qilish ssenariylari bilan ishlang.</p></div>
-          <a href="/materials/BT.pdf" target="_blank" rel="noopener"><span>01</span><strong>Biznes talablar<small>PDF · 20 ta ssenariy</small></strong><b>↗</b></a>
-          <a href="/materials/transfer-bpmn.svg" target="_blank" rel="noopener"><span>02</span><strong>BPMN jarayoni<small>Pul o'tkazish chizmasi</small></strong><b>↗</b></a></section>
-        <details class="session-tools"><summary>Sinov holatini boshqarish</summary><p>Brauzeringizdagi demo holat alohida. “Qayta ochish” saqlangan fayldan yuklaydi; “Boshidan boshlash” shu demo holatni tozalaydi.</p>
-          <div><form method="post" action="/action">{field('reopen', csrf)}<button class="utility" type="submit">Dasturni qayta ochish</button></form>
-          <form method="post" action="/action">{field('reset', csrf)}<button class="utility" type="submit">Boshidan boshlash</button></form></div></details>
       </main><footer><span class="footer-brand">CardLab</span><span>O‘rganing. Tekshiring. Tuzating.</span><span>Python hakatoni · 2026</span></footer></body></html>'''
 
 

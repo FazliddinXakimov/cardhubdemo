@@ -6,6 +6,7 @@ services:
     container_name: cardlab-web
     ports:
       - "127.0.0.1:${CARDLAB_PORT:-5057}:8000"
+      - "${CARDLAB_LAN_IP:-10.50.70.62}:${CARDLAB_PORT:-5057}:8000"
     volumes:
       - cardlab-data:/app/data
     restart: unless-stopped

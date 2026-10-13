@@ -15,15 +15,38 @@ Tayyor format: **BT + BPMN + ataylab xato kiritilgan Python loyihasi**. O'quvchi
 
 ## Ishga tushirish
 
+### Guruhlarga alohida berish va yakunda tekshirish
+
+Har bir jamoa bir xil boshlang'ich loyihaning **alohida nusxasi** bilan ishlaydi. Tashkilotchi jamoalar ro'yxatidan nomlangan ZIP to'plamlar tayyorlaydi, yakunda topshiriqlarni yig'adi va har birini alohida tekshiradi.
+
+1. `organizer/teams.example.csv` nusxasiga jamoa IDsi, nomi va a'zolarini yozing.
+2. Har bir jamoa uchun to'plam yarating:
+
+   ```bash
+   python3 organizer/prepare_teams.py --roster organizer/teams.example.csv --output events/cardlab
+   ```
+
+3. `events/cardlab/packages/` ichidagi tegishli ZIPni har bir jamoaga alohida bering. Yakunda qaytarilgan ZIPni ochib, jamoa papkasini `events/cardlab/submissions/<team_id>/` manziliga joylashtiring. Uning ichida `project/bank.py`, `HISOBOT.md` va `TEAM.json` bo'ladi.
+4. `events/cardlab/manual_scores.csv` fayliga hisobot (0–15), test/kod (0–10), namoyish (0–5) baholarini kiriting. Bo'sh katak — hali baholanmagan; `0` — qo'yilgan baho.
+5. Barcha jamoalarni tekshiring:
+
+   ```bash
+   python3 organizer/evaluate_teams.py --event events/cardlab
+   ```
+
+Natijalar `events/cardlab/results/` ichida: `leaderboard.md`, `results.csv`, `results.json` va har bir jamoa uchun `logs/` tekshiruv dalillari. Avtomatik qism 70 ball, hakam qismi 30 ball. Qayta tekshirishda eski natijalarni saqlash uchun `--output events/cardlab/results-final` kabi yangi papka ko'rsating. To'liq tartib: [tashkilotchi yo'riqnomasi](organizer/README.md).
+
+### Umumiy brauzer demosi
+
 Docker bilan brauzerda ochish (loyiha ildizidan):
 
 ```bash
 docker compose up -d --build
 ```
 
-Havola: **http://localhost:5057**. Port faqat ushbu kompyuterga bog'langan. Boshqa port kerak bo'lsa: `CARDLAB_PORT=5058 docker compose up -d --build`.
+Havola: **http://localhost:5057**. Bir xil lokal tarmoqdagi boshqa qurilmalar **http://10.50.70.62:5057** orqali kiradi. Port faqat localhost va belgilangan LAN IPv4 manziliga bog'langan. Kompyuterning LAN IP manzili o'zgarsa, `.env` fayliga `CARDLAB_LAN_IP=<yangi-LAN-IP>` yozib, konteynerni `docker compose up -d` bilan qayta yarating. Boshqa port kerak bo'lsa: `CARDLAB_PORT=5058 docker compose up -d --build`.
 
-Brauzerda karta amaliyotlari, tarix, BT/BPMN va o'quvchi ZIPini yuklab olish mavjud. U aynan xatoli `participant/project/bank.py` kodini ishlatadi. Har bir brauzer cookie orqali alohida demo holat oladi. “Dasturni qayta ochish” saqlashni tekshiradi; “Boshidan boshlash” shu demo holatni tiklaydi. Docker ma'lumotlari `cardlab-data` hajmida saqlanadi; starterdagi saqlash xatosi tuzatilmaguncha JSON yozilmaydi.
+Brauzerda karta amaliyotlari, tarix, BT/BPMN va umumiy o'quvchi ZIPini yuklab olish mavjud. Jamoa uchun nomlangan ZIPni tashkilotchi alohida beradi. Server aynan xatoli `participant/project/bank.py` kodini ishlatadi. Har bir brauzer cookie orqali alohida demo holat oladi. Jamoaning o'z kompyuteridagi kod tuzatishlari umumiy serverga o'tmaydi; ularni o'z nusxasida `python web.py` yoki `python app.py` bilan tekshiradi. “Dasturni qayta ochish” saqlashni tekshiradi; “Boshidan boshlash” shu demo holatni tiklaydi. Docker ma'lumotlari `cardlab-data` hajmida saqlanadi; starterdagi saqlash xatosi tuzatilmaguncha JSON yozilmaydi.
 
 `bank.py`ni o'zgartirgandan keyin Docker uchun yuqoridagi build buyrug'ini qayta bajaring. Konteynerga tashkilotchi yechimi kiritilmaydi. Bu mahalliy hakaton demo serveri.
 
@@ -45,4 +68,3 @@ Ishtirokchi loyihasi **ataylab xatoli**. `organizer/run_checks.py` uning talabga
 ## Hujjatlarni qayta yaratish
 
 `tools/build_materials.py` SVG va BPMN XMLni yaratadi. `tools/build_pdf.py` PDFni yaratadi (faqat muallif uchun `reportlab` kerak). `tools/package.py` tarqatish arxivlarini yaratadi. Bu vositalar o'quvchi loyihasini ishlatish uchun kerak emas.
-# cardhubdemo

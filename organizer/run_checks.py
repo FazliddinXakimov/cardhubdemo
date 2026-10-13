@@ -1,9 +1,10 @@
-"""Ishlatish: python organizer/run_checks.py participant/project
+"""Ishlatish: python organizer/run_checks.py participant/project [--json-output natija.json]
 
 Har bir funksional guruh to'liq o'tsa, uning bali beriladi (jami 70).
 Qolgan 30 ball hakam tomonidan baholanadi. Har test vaqtinchalik JSON bilan ishlaydi.
 """
 
+import argparse
 import copy
 import importlib.util
 import json
@@ -184,17 +185,57 @@ GROUPS = [(AmountRules, 10), (ActiveSource, 10), (ActiveReceiver, 5),
           (CreditAndHistory, 10), (Persistence, 10), (Regression, 0)]
 
 
-def main():
+def empty_report():
+    """Import xatosini funksional tekshiruvdan ajratadigan boshlang'ich natija."""
+    return {
+        "schema_version": 1,
+        "status": "error",
+        "functional_score": None,
+        "max_functional_score": 70,
+        "tests_run": 0,
+        "all_passed": False,
+        "regression_passed": False,
+        "groups": [],
+        "error": None,
+    }
+
+
+def load_submission(project):
     global Bank, BankError
-    project = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else ROOT / "participant" / "project"
     module_path = project / "bank.py"
+    if not module_path.is_file():
+        raise FileNotFoundError(f"bank.py topilmadi: {module_path}")
     sys.path.insert(0, str(project))
     spec = importlib.util.spec_from_file_location("cardlab_submission", module_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"bank.py yuklanmadi: {module_path}")
     module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    Bank, BankError = module.Bank, module.BankError
+    bank = getattr(module, "Bank", None)
+    bank_error = getattr(module, "BankError", None)
+    if not isinstance(bank, type):
+        raise TypeError("bank.py ichida Bank klassi bo'lishi kerak")
+    if not isinstance(bank_error, type) or not issubclass(bank_error, Exception):
+        raise TypeError("BankError Exception klassidan voris olishi kerak")
+    required = ("cards", "history", "top_up", "transfer", "toggle_block", "save")
+    missing = [name for name in required if not callable(getattr(bank, name, None))]
+    if missing:
+        raise TypeError("Bank metodlari topilmadi: " + ", ".join(missing))
+    Bank, BankError = bank, bank_error
+
+
+def check_project(project):
+    report = empty_report()
+    try:
+        load_submission(project)
+    except (Exception, SystemExit) as exc:
+        report["error"] = f"{type(exc).__name__}: {exc}"
+        print(f"Loyihani tekshirib bo'lmadi: {report['error']}", file=sys.stderr)
+        return report, 2
+
     score, count, all_ok = 0, 0, True
-    for group, points in GROUPS:
+    for index, (group, points) in enumerate(GROUPS, start=1):
         suite = unittest.defaultTestLoader.loadTestsFromTestCase(group)
         result = unittest.TextTestRunner(verbosity=2).run(suite)
         count += result.testsRun
@@ -202,11 +243,45 @@ def main():
         all_ok = all_ok and passed
         earned = points if passed else 0
         score += earned
+        report["groups"].append({
+            "id": "Regression" if group is Regression else f"B{index}",
+            "name": group.__name__,
+            "earned": earned,
+            "possible": points,
+            "passed": passed,
+            "tests_run": result.testsRun,
+            "failures": len(result.failures),
+            "errors": len(result.errors),
+        })
+        if group is Regression:
+            report["regression_passed"] = passed
         print(f"{group.__name__}: {earned}/{points}", flush=True)
+    report.update(status="checked", functional_score=score, tests_run=count,
+                  all_passed=all_ok)
     print(f"\nFunksional ball: {score}/70. Test metodlari: {count}. Qolgan 30 ball: hakam bahosi.")
     if not all_ok:
         print("Bajarilmagan talablar bor. Regressiya xatolarini ham tekshiring.")
-    return 0 if all_ok else 1
+    return report, 0 if all_ok else 1
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="CardLab loyihasini tekshirish (70 ball).")
+    parser.add_argument("project", nargs="?", type=Path,
+                        default=ROOT / "participant" / "project",
+                        help="bank.py joylashgan loyiha papkasi")
+    parser.add_argument("--json-output", type=Path, metavar="PATH",
+                        help="avtomatik qayta ishlash uchun JSON natija fayli")
+    args = parser.parse_args(argv)
+    report, exit_code = check_project(args.project.resolve())
+    if args.json_output is not None:
+        try:
+            args.json_output.parent.mkdir(parents=True, exist_ok=True)
+            args.json_output.write_text(
+                json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        except OSError as exc:
+            print(f"JSON natijani saqlab bo'lmadi: {exc}", file=sys.stderr)
+            return 2
+    return exit_code
 
 
 if __name__ == "__main__":

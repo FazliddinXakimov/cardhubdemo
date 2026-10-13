@@ -18,7 +18,7 @@ python web.py
 
 Manzil: http://localhost:8000. U aynan shu `bank.py`dan foydalanadi. BT va BPMN havolalari ishlashi uchun `project` papkasini ishtirokchi to'plamidagi o'rnida saqlang.
 
-Har brauzer uchun alohida demo holat yaratiladi. Oddiy sahifa yangilanishi ochiq dastur holatini saqlaydi. “Sinov holatini boshqarish” ichidagi “Dasturni qayta ochish” JSON saqlashni tekshirish uchun, “Boshidan boshlash” esa yangi sinov uchun ishlatiladi. Brauzer versiyasi fayllari `data/web/` ichida; terminal versiyasi `data/bank.json`dan foydalanadi.
+Har brauzer uchun alohida demo holat yaratiladi. Oddiy sahifa yangilanishi ochiq dastur holatini saqlaydi. Sahifa yuqorisidagi “Dasturni qayta ochish” JSON saqlashni tekshirish uchun, “Boshidan boshlash” esa yangi sinov uchun ishlatiladi. Brauzer versiyasi fayllari `data/web/` ichida; terminal versiyasi `data/bank.json`dan foydalanadi.
 
 Muhitni tekshirish:
 
@@ -40,4 +40,6 @@ BT va BPMN yuqoridagi papkada. Asosiy tuzatishlar `bank.py` ichida bajariladi. `
 
 Har bir mustaqil BT ssenariysidan oldin dasturni yoping va **faqat demo ma'lumotlari bo'lgan** `data/bank.json` faylini o'chiring, so'ng qayta ishga tushiring. Fayl mavjud bo'lmasa, loyiha boshlang'ich ma'lumotlarni oladi. Qayta ishga tushirish bilan bog'liq ssenariyda faylni o'chirmang.
 
-Topshirish: tuzatilgan loyiha, yozgan testlaringiz va `HISOBOT.md`. Real karta raqamlari, PIN va parol kiritilmaydi.
+Har bir jamoa o'z loyiha nusxasini tuzatadi. Umumiy serverdagi demo sizning mahalliy tuzatishlaringizni avtomatik olmaydi; natijani o'z kompyuteringizda tekshiring.
+
+Topshirish: jamoa papkasini ZIP qiling; uning ichida tuzatilgan `project/`, yozgan testlaringiz, `HISOBOT.md` va berilgan bo'lsa `TEAM.json` bo'lsin. Jamoa IDsini saqlang. Yakunda har jamoaning ishi alohida tekshiriladi va 3 daqiqalik namoyish baholanadi. Real karta raqamlari, PIN va parol kiritilmaydi.
