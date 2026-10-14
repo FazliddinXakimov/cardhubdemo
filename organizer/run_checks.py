@@ -27,11 +27,11 @@ class BankCase(unittest.TestCase):
     def balance(self, card_id):
         return next(card["balance"] for card in self.bank.cards() if card["id"] == card_id)
 
-    def assert_rejected(self, method, *args):
+    def assert_rejected(self, method, *args, **kwargs):
         before = copy.deepcopy(self.bank.data)
         disk_before = self.path.read_bytes() if self.path.exists() else None
         with self.assertRaises(BankError):
-            method(*args)
+            method(*args, **kwargs)
         self.assertEqual(self.bank.data, before, "Rad etish xotiradagi holatni o'zgartirdi")
         disk_after = self.path.read_bytes() if self.path.exists() else None
         self.assertEqual(disk_after, disk_before, "Rad etish saqlangan holatni o'zgartirdi")
@@ -85,6 +85,18 @@ class Commission(BankCase):
                 self.assertEqual(transaction["fee"], expected)
                 self.assertEqual(bank.history()[0]["fee"], expected)
 
+    def test_included_fee_rounds_up(self):
+        for amount, expected in [("2", 1), ("100", 1), ("101", 2),
+                                 ("50000", 500), ("50001", 501)]:
+            with self.subTest(amount=amount):
+                bank = Bank(Path(self.temp.name) / ("deduct-" + amount + ".json"))
+                transaction = bank.transfer("C1", "C2", amount, fee_mode="deduct")
+                self.assertEqual(transaction["fee"], expected)
+                self.assertEqual(bank.history()[0]["fee"], expected)
+
+    def test_included_fee_must_leave_receiver_money(self):
+        self.assert_rejected(self.bank.transfer, "C1", "C2", "1", fee_mode="deduct")
+
 
 class BalanceRules(BankCase):
     def test_amount_without_fee_is_not_enough(self):
@@ -99,6 +111,13 @@ class BalanceRules(BankCase):
         self.bank.data["cards"][0]["balance"] = 100_999
         self.assert_rejected(self.bank.transfer, "C1", "C2", "100000")
 
+    def test_included_fee_needs_only_amount(self):
+        self.bank.transfer("C1", "C2", "200000", fee_mode="deduct")
+        self.assertEqual(self.balance("C1"), 0)
+
+    def test_included_fee_one_som_short_is_rejected(self):
+        self.assert_rejected(self.bank.transfer, "C2", "C1", "50001", fee_mode="deduct")
+
 
 class CreditAndHistory(BankCase):
     def test_transfer_balances_and_complete_history(self):
@@ -108,10 +127,31 @@ class CreditAndHistory(BankCase):
         self.assertEqual(sum(card["balance"] for card in self.bank.cards()), 349_500)
         self.assertEqual(len(self.bank.history()), 1)
         for key, value in {"id": 1, "type": "TRANSFER", "source": "C1", "target": "C2",
-                           "amount": 50_000, "fee": 500}.items():
+                           "amount": 50_000, "fee": 500, "fee_mode": "additional",
+                           "debited_amount": 50_500, "received_amount": 50_000}.items():
             self.assertEqual(tx[key], value)
         self.assertEqual(self.bank.history()[0], tx)
         self.assertEqual(datetime.fromisoformat(tx["time"]).utcoffset().total_seconds(), 0)
+
+    def test_included_fee_is_taken_from_amount(self):
+        tx = self.bank.transfer("C1", "C2", "50000", fee_mode="deduct")
+        self.assertEqual([self.balance(key) for key in ["C1", "C2", "C3"]],
+                         [150_000, 99_500, 100_000])
+        self.assertEqual(sum(card["balance"] for card in self.bank.cards()), 349_500)
+        for key, value in {"id": 1, "type": "TRANSFER", "source": "C1", "target": "C2",
+                           "amount": 50_000, "fee": 500, "fee_mode": "deduct",
+                           "debited_amount": 50_000, "received_amount": 49_500}.items():
+            self.assertEqual(tx[key], value)
+        self.assertEqual(self.bank.history(), [tx])
+
+    def test_both_modes_in_one_history(self):
+        self.bank.transfer("C1", "C2", "50000")
+        self.bank.transfer("C1", "C2", "50000", fee_mode="deduct")
+        self.assertEqual(self.balance("C1"), 99_500)
+        self.assertEqual(self.balance("C2"), 149_500)
+        self.assertEqual([(tx["id"], tx["fee_mode"], tx["debited_amount"], tx["received_amount"])
+                          for tx in self.bank.history()],
+                         [(2, "deduct", 50_000, 49_500), (1, "additional", 50_500, 50_000)])
 
     def test_top_up_and_newest_first(self):
         self.bank.top_up("C1", "25000")
@@ -147,6 +187,13 @@ class Persistence(BankCase):
         with self.path.open(encoding="utf-8") as file:
             self.assertEqual(json.load(file), reloaded.data)
 
+    def test_fee_mode_survives_restart(self):
+        self.bank.transfer("C1", "C2", "50000")
+        self.bank.transfer("C1", "C2", "50000", fee_mode="deduct")
+        reloaded = Bank(self.path)
+        self.assertEqual(reloaded.data, self.bank.data)
+        self.assertEqual(reloaded.top_up("C1", "1000")["id"], 3)
+
     def test_unblock_survives_restart(self):
         self.bank.toggle_block("C3")
         self.assertFalse(Bank(self.path).cards()[2]["blocked"])
@@ -172,6 +219,11 @@ class Regression(BankCase):
                              (self.bank.toggle_block, ("C9",))]:
             with self.subTest(operation=method.__name__, args=args):
                 self.assert_rejected(method, *args)
+
+    def test_unknown_fee_mode_rejected(self):
+        for mode in ["", "DEDUCT", "include", None]:
+            with self.subTest(fee_mode=mode):
+                self.assert_rejected(self.bank.transfer, "C1", "C2", "1000", fee_mode=mode)
 
     def test_read_operations_do_not_mutate_state(self):
         before = copy.deepcopy(self.bank.data)

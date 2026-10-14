@@ -1,6 +1,6 @@
 # CARDLAB - KARTALAR BILAN AMALIYOTLAR
 
-**Biznes talablar (BT) va amaliy topshiriq | v1.0 | Python**
+**Biznes talablar (BT) va amaliy topshiriq | v1.1 | Python**
 
 Daraja: Python asoslarini biladigan maktab o'quvchilari. Tavsiya: 120 daqiqa, jamoada 2-3 kishi. Kerakli bilimlar: funksiya, shart, lug'at, ro'yxat, fayl va sodda klass bilan ishlash.
 
@@ -8,7 +8,7 @@ Daraja: Python asoslarini biladigan maktab o'quvchilari. Tavsiya: 120 daqiqa, ja
 
 CardLab demo hamyonidagi karta amaliyotlari noto'g'ri ishlayapti. Sizga terminalda ishga tushadigan, ichiga ataylab biznes mantiq xatolari kiritilgan Python loyihasi beriladi. BT va BPMN asosida xatolarni toping, sababini aniqlang, tuzating va tekshiring.
 
-Natija: foydalanuvchi balansni ko'ra oladigan, demo hisobni to'ldiradigan, boshqa kartaga pul o'tkazadigan, kartani bloklaydigan va tarixni ko'radigan to'g'ri ishlovchi dastur.
+Natija: foydalanuvchi balansni ko'ra oladigan, demo hisobni to'ldiradigan, boshqa kartaga komissiyani ustidan yoki summaning ichidan olib pul o'tkazadigan, kartani bloklaydigan va tarixni ko'radigan to'g'ri ishlovchi dastur.
 
 Bu o'quv modeli. Haqiqiy bank integratsiyasi, karta raqami, PIN, ro'yxatdan o'tish, internet, ma'lumotlar bazasi serveri va veb-sahifa talab qilinmaydi. Komissiya va cheklovlar aynan shu topshiriq uchun belgilangan.
 
@@ -44,20 +44,29 @@ Karta IDsi va summa kiritiladi. R1 va R2 tekshiriladi. Faqat tanlangan kartaning
 
 ### C. Kartadan kartaga pul o'tkazish
 
-Yuboruvchi ID, qabul qiluvchi ID va summa kiritiladi. R1-R2 bajarilishi, kartalar turlicha bo'lishi va yuboruvchida komissiyani ham qoplaydigan balans bo'lishi shart.
+Yuboruvchi ID, qabul qiluvchi ID, summa va komissiya usuli kiritiladi. Usul bank ilovalaridagi kabi bitta **Include commission** (komissiyani summaga kiritish) switchi bilan tanlanadi; standart holatda u o'chirilgan. R1-R2 bajarilishi, kartalar turlicha bo'lishi va yuboruvchida jami yechimni qoplaydigan balans bo'lishi shart.
 
 ```text
-komissiya = summaning 1 foizi, butun so'mgacha yuqoriga yaxlitlanadi
-jami yechim = summa + komissiya
+komissiya = summaning 1 foizi, butun so'mgacha yuqoriga yaxlitlanadi (ikkala usulda bir xil)
+
+Include commission O'CHIRILGAN, fee_mode = "additional" (standart):
+  jami yechim = summa + komissiya
+  oluvchiga   = summa
+Include commission YOQILGAN, fee_mode = "deduct":
+  jami yechim = summa
+  oluvchiga   = summa - komissiya (kamida 1 so'm)
+
 yuboruvchining yangi balansi = eski balans - jami yechim
-qabul qiluvchining yangi balansi = eski balans + summa
+qabul qiluvchining yangi balansi = eski balans + oluvchiga
 ```
 
-Masalan, 50 000 so'm uchun komissiya 500; 50 001 so'm uchun 501; 1 so'm uchun 1. Komissiya qabul qiluvchiga qo'shilmaydi. Komissiya hisobi alohida karta sifatida yuritilmaydi: ikki karta balanslari yig'indisi faqat komissiya miqdoriga kamayadi.
+Masalan, 50 000 so'm uchun komissiya 500; 50 001 so'm uchun 501; 1 so'm uchun 1. Switch o'chirilganda 50 000 so'mlik o'tkazmada yuboruvchidan 50 500 yechiladi, oluvchiga 50 000 tushadi. Yoqilganda yuboruvchidan 50 000 yechiladi, oluvchiga 49 500 tushadi. Komissiya qabul qiluvchiga qo'shilmaydi. Komissiya hisobi alohida karta sifatida yuritilmaydi: ikkala usulda ham ikki karta balanslari yig'indisi faqat komissiya miqdoriga kamayadi.
+
+Switch yoqilganda oluvchiga kamida 1 so'm tushishi kerak: 1 so'mlik o'tkazmada komissiya ham 1 bo'lgani uchun u rad etiladi. `fee_mode` faqat `"additional"` yoki `"deduct"` bo'lishi mumkin; boshqa qiymat rad etiladi.
 
 Yuboruvchining balansi jami yechimga aynan teng bo'lsa, amaliyot bajariladi va balans 0 bo'ladi. Avval barcha tekshiruvlar, keyin ikkala balansni o'zgartirish bajariladi. Bitta `TRANSFER` tarix yozuvi yaratiladi va holat saqlanadi.
 
-**Asosiy misol:** C1 dan C2 ga 50 000 so'm. C1: 149 500, C2: 100 000, C3: 100 000. Tarixda bitta o'tkazma, summa 50 000 va komissiya 500.
+**Asosiy misol:** C1 dan C2 ga 50 000 so'm, switch o'chirilgan. C1: 149 500, C2: 100 000, C3: 100 000. Tarixda bitta o'tkazma, summa 50 000 va komissiya 500. Xuddi shu o'tkazma switch yoqilgan holda: C1: 150 000, C2: 99 500, komissiya 500.
 
 ### D. Bloklash / blokdan chiqarish
 
@@ -65,21 +74,21 @@ ID bo'yicha karta holati teskarisiga o'zgaradi: FAOL -> BLOKLANGAN yoki BLOKLANG
 
 ### E. Amaliyotlar tarixi
 
-Eng yangi yozuv birinchi ko'rsatiladi. Faqat muvaffaqiyatli pul amaliyotlari yoziladi. Har birida `id`, `type`, `source`, `target`, `amount`, `fee`, `time` bo'ladi. To'ldirishda `source` qiymati `None`; ekranda `DEMO` ko'rsatiladi. `time` - ISO 8601 formatidagi UTC vaqt. ID ketma-ket oshadi va qayta ishga tushirganda takrorlanmaydi.
+Eng yangi yozuv birinchi ko'rsatiladi. Faqat muvaffaqiyatli pul amaliyotlari yoziladi. Har birida `id`, `type`, `source`, `target`, `amount`, `fee`, `time` bo'ladi. `amount` - kiritilgan summa. `TRANSFER` yozuvida qo'shimcha `fee_mode` (`additional` yoki `deduct`), `debited_amount` (yuboruvchidan jami yechim) va `received_amount` (oluvchiga tushgan summa) bo'ladi. To'ldirishda `source` qiymati `None`; ekranda `DEMO` ko'rsatiladi. `time` - ISO 8601 formatidagi UTC vaqt. ID ketma-ket oshadi va qayta ishga tushirganda takrorlanmaydi.
 
 ## 5. BPMN - pul o'tkazish jarayoni
 
 ![BPMN: pul o'tkazish jarayoni](transfer-bpmn.svg)
 
-Boshlash -> ma'lumot kiritish -> summa va IDlarni tekshirish -> ikkala karta faol ekanini tekshirish -> komissiya va jami yechimni hisoblash -> balans yetarliligini tekshirish -> ikkala balansni yangilash -> tarixga yozish va saqlash -> muvaffaqiyatli yakun.
+Boshlash -> kartalar, summa va komissiya usulini kiritish -> summa, IDlar va usulni tekshirish -> ikkala karta faol ekanini tekshirish -> komissiya, jami yechim va oluvchiga tushadigan summani hisoblash -> oluvchiga kamida 1 so'm tushishini tekshirish -> balans yetarliligini tekshirish -> ikkala balansni yangilash -> tarixga yozish va saqlash -> muvaffaqiyatli yakun.
 
-Har qanday salbiy tekshiruv natijasi rad etish yo'liga o'tadi; ma'lumotlar o'zgarmaydi. Aylana - hodisa, yumaloq to'rtburchak - vazifa, X belgili romb - faqat bitta yo'l tanlanadigan qaror, strelka - bajarilish ketma-ketligi. O'ngdagi birlashtiruvchi romb rad etish yo'llarini bir joyga yig'adi.
+Har qanday salbiy tekshiruv natijasi rad etish yo'liga o'tadi; ma'lumotlar o'zgarmaydi. Aylana - hodisa, yumaloq to'rtburchak - vazifa, X belgili romb - faqat bitta yo'l tanlanadigan qaror, strelka - bajarilish ketma-ketligi. O'ngdagi ikki birlashtiruvchi romb rad etish yo'llarini bir joyga yig'adi.
 
 Tahrirlash uchun `transfer.bpmn` BPMN 2.0 XML fayli ham berilgan. Chizma pul o'tkazish amaliyotini ifodalaydi; qolgan amaliyotlarning qoidalari 4-bo'limda. Notatsiya manbasi: [OMG BPMN 2.0.2](https://www.omg.org/spec/BPMN/2.0.2/).
 
 ## 6. Qabul qilish ssenariylari
 
-Har qator mustaqil. Alohida ko'rsatilmagan bo'lsa, 2-bo'limdagi boshlang'ich holatdan boshlang. Rad etilgan barcha holatlarda R3ni ham tekshiring.
+Har qator mustaqil. Alohida ko'rsatilmagan bo'lsa, 2-bo'limdagi boshlang'ich holatdan boshlang va Include commission o'chirilgan bo'lsin. "ON" - switch yoqilgan. Rad etilgan barcha holatlarda R3ni ham tekshiring.
 
 | ID | Amal | Kutilgan natija |
 |---|---|---|
@@ -103,12 +112,20 @@ Har qator mustaqil. Alohida ko'rsatilmagan bo'lsa, 2-bo'limdagi boshlang'ich hol
 | T18 | Mavjud bo'lmagan C9ga to'ldirish yoki o'tkazish | Karta topilmadi; rad etiladi |
 | T19 | C1 hisobini 1 ga to'ldirish | C1=200 001; komissiya=0 |
 | T20 | C1 hisobini 1 000 000 ga to'ldirish | C1=1 200 000; komissiya=0; 1 000 000 chegarasi balansga emas, kiritiladigan summaga tegishli |
+| T21 | C1 -> C2, 50 000, ON | C1=150 000; C2=99 500; komissiya=500; jami yechim=50 000; oluvchiga=49 500 |
+| T22 | C1 -> C2, 50 001, ON | C1=149 999; C2=99 500; komissiya=501; oluvchiga=49 500 |
+| T23 | C1 -> C2, 200 000, ON | Balans aynan yetadi: C1=0; C2=248 000; komissiya=2 000 (switch o'chirilganda T05 rad etiladi) |
+| T24 | C1 -> C2, 1, ON | Oluvchiga 0 so'm tushadi; rad etiladi |
+| T25 | C1 -> C2, 2, ON | C1=199 998; C2=50 001; komissiya=1; oluvchiga=1 |
+| T26 | C2 -> C1, 50 001, ON | C2 balansi summaga yetmaydi; rad etiladi |
+| T27 | C1 -> C2, 50 000 switch o'chirilgan, so'ng C1 -> C2, 50 000, ON | C1=99 500; C2=149 500; tarix IDlari [2, 1]; #2 `deduct`, yechim 50 000, oluvchiga 49 500; #1 `additional`, yechim 50 500, oluvchiga 50 000 |
+| T28 | T27 amallarini bajarish, dasturni yopib ochish | Balanslar va ikkala yozuvning komissiya usuli, yechilgan va tushgan summasi saqlanadi; keyingi pul amaliyoti IDsi=3 |
 
 ## 7. Texnik talablar va topshiriladigan natija
 
-Python 3.10+, faqat standart kutubxona. `python app.py` bilan ishlashi kerak. Ma'lumotlar JSON faylida. `Bank` klassi, `BankError`, `cards`, `history`, `top_up`, `transfer`, `toggle_block`, `save` metodlari va mavjud ma'lumot maydonlari saqlansin. Ichki funksiyalarni o'zgartirish va qo'shish mumkin.
+Python 3.10+, faqat standart kutubxona. `python app.py` bilan ishlashi kerak. Ma'lumotlar JSON faylida. `Bank` klassi, `BankError`, `cards`, `history`, `top_up`, `transfer`, `toggle_block`, `save` metodlari va mavjud ma'lumot maydonlari saqlansin. O'tkazma imzosi: `transfer(source_id, target_id, raw_amount, fee_mode="additional")`. Ichki funksiyalarni o'zgartirish va qo'shish mumkin.
 
-Topshiring: tuzatilgan loyiha, kamida 3 ta mazmunli qo'shimcha `unittest` testi va to'ldirilgan `HISOBOT.md`. Testlardan biri rad etishda holat o'zgarmasligini, biri komissiyani, biri qayta ishga tushganda saqlanishni tekshirsin. Tuzatishlarni 3 daqiqalik namoyishda tushuntiring.
+Topshiring: tuzatilgan loyiha, kamida 3 ta mazmunli qo'shimcha `unittest` testi va to'ldirilgan `HISOBOT.md`. Testlardan biri rad etishda holat o'zgarmasligini, biri komissiyani (ikkala usulda), biri qayta ishga tushganda saqlanishni tekshirsin. Tuzatishlarni 3 daqiqalik namoyishda tushuntiring.
 
 ## 8. Baholash - 100 ball
 
@@ -118,9 +135,9 @@ Topshiring: tuzatilgan loyiha, kamida 3 ta mazmunli qo'shimcha `unittest` testi 
 | Bloklangan kartadan yuborish va uni to'ldirishni rad etish | 10 |
 | Bloklangan kartaga o'tkazishni rad etish | 5 |
 | Bir kartadan o'ziga o'tkazishni rad etish | 5 |
-| 1% komissiyani yuqoriga yaxlitlash | 10 |
-| Komissiya bilan balans tekshiruvi va tenglik holati | 10 |
-| Ikki balansni to'g'ri o'zgartirish va tarixni to'g'ri yuritish | 10 |
+| 1% komissiyani yuqoriga yaxlitlash va oluvchiga kamida 1 so'm tushishi | 10 |
+| Komissiya usuliga mos balans tekshiruvi va tenglik holati | 10 |
+| Ikkala komissiya usulida balanslarni to'g'ri o'zgartirish va tarixni to'g'ri yuritish | 10 |
 | JSON saqlash va qayta yuklash | 10 |
 | Xatolar hisoboti: takrorlash, sabab, tuzatish dalili | 15 |
 | Qo'shimcha testlar va o'qilishi oson kod | 10 |

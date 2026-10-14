@@ -90,12 +90,12 @@ Jamoa yozgan qo'shimcha testlar hakam tomonidan ko'rib chiqiladi; avtomatik baho
 | B2 | top_up / transfer | To'ldirilayotgan yoki yuboruvchi karta blok holati tekshirilmaydi | Ikkala joyda faol holat tekshiruvi | 10 |
 | B3 | transfer | Bloklangan qabul qiluvchi pul oladi | Qabul qiluvchi ham faol bo'lishi kerak | 5 |
 | B4 | transfer | O'ziga o'tkazma bajariladi | source_id != target_id | 5 |
-| B5 | calculate_fee | 1% pastga yaxlitlanadi | Butun son arifmetikasi: (amount + 99) // 100 | 10 |
-| B6 | transfer | Balans faqat summaga solishtiriladi | Balans >= summa + komissiya | 10 |
-| B7 | transfer | Qabul qiluvchiga komissiya ham qo'shiladi | Yuboruvchidan jami yechish, oluvchiga faqat summa | 10 |
+| B5 | calculate_fee / transfer | 1% pastga yaxlitlanadi; Include commission yoqilganda oluvchiga 0 so'm tushishi tekshirilmaydi | Butun son arifmetikasi: (amount + 99) // 100; `deduct`da oluvchiga kamida 1 so'm | 10 |
+| B6 | transfer | Balans faqat summaga solishtiriladi | Balans >= jami yechim: `additional`da summa + komissiya, `deduct`da summa | 10 |
+| B7 | transfer | Qabul qiluvchiga jami yechim qo'shiladi; tarixdagi `received_amount` ham shunday | Yuboruvchidan jami yechish; oluvchiga `additional`da summa, `deduct`da summa - komissiya | 10 |
 | B8 | save | JSON matni yaratiladi, faylga yozilmaydi | UTF-8 bilan data/bank.json ga yozish | 10 |
 
-Menyu va boshlang'ich smoke testlar ishga tushadi. Starterda barcha 8 funksional guruh kamida bitta tekshiruvda yiqiladi; Regression guruhi o'tadi. Etalonda barcha testlar o'tishi shart. Bitta xato bir nechta ssenariyga ta'sir qilishi mumkin; xato guruhlari soni testlar soniga teng emas.
+Include commission switchi (`transfer(..., fee_mode="additional" | "deduct")`) alohida xato guruhi emas: uning talablari B5–B8 tekshiruvlariga qo'shilgan, shuning uchun funksional ball 70 bo'lib qoladi. Starterda `fee_mode` qiymati tekshiriladi va bu Regression guruhida. Menyu va boshlang'ich smoke testlar ishga tushadi. Starterda barcha 8 funksional guruh kamida bitta tekshiruvda yiqiladi; Regression guruhi o'tadi. Etalonda barcha testlar o'tishi shart. Bitta xato bir nechta ssenariyga ta'sir qilishi mumkin; xato guruhlari soni testlar soniga teng emas.
 
 ## Tekshirish va baholash
 
@@ -116,7 +116,7 @@ Qo'lda beriladigan 30 ball:
 - **Testlar va kod, 10:** kamida 3 talabga mos mazmunli test 6; o'qiladigan funksiya va nomlar 4. Faqat implementatsiyani qayta hisoblaydigan testlar to'liq ball olmaydi.
 - **Namoyish, 5:** muvaffaqiyatli o'tkazma 2; rad etish va holat o'zgarmasligi 2; qisqa tushuntirish 1.
 
-Testlar barcha mumkin bo'lgan yechimni isbotlamaydi. Ayniqsa guruhlar kesishadigan T13 (198 019 so'm, aniq nol balans), T15 (blokdan chiqarilgan kartaga o'tkazma) va T17ni qo'lda ham ko'ring. Etalon yagona mumkin bo'lgan kod emas: BTga mos boshqa yechimlarni qabul qiling.
+Testlar barcha mumkin bo'lgan yechimni isbotlamaydi. Ayniqsa guruhlar kesishadigan T13 (198 019 so'm, aniq nol balans), T15 (blokdan chiqarilgan kartaga o'tkazma), T17, T23 (switch yoqilganda aniq nol balans), T24 (oluvchiga 0 so'm) va T27–T28 (ikkala usul bitta tarixda va qayta yuklashda) ni qo'lda ham ko'ring. Etalon yagona mumkin bo'lgan kod emas: BTga mos boshqa yechimlarni qabul qiling.
 
 ## Hakaton o'tkazish tartibi
 

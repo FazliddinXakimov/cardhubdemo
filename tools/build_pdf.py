@@ -1,4 +1,4 @@
-"""BT.md matnidan tartiblangan 7 sahifalik PDF. Muallif uchun: pip install reportlab."""
+"""BT.md matnidan tartiblangan PDF. Muallif uchun: pip install reportlab."""
 
 import math
 import os
@@ -15,7 +15,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
                                PageBreak, Preformatted, Flowable)
-from build_materials import NODES, FLOWS, WIDTH, HEIGHT
+from build_materials import NODES, FLOWS, WIDTH, HEIGHT, DEFAULT_FLOWS
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "output/pdf/BT-CardLab-Python.pdf"
@@ -112,10 +112,13 @@ def markdown(text):
 
 
 class BpmnDiagram(Flowable):
-    def __init__(self, width=BODY_WIDTH):
+    def __init__(self, width=BODY_WIDTH, max_height=None):
         Flowable.__init__(self)
+        if max_height:
+            width = min(width, max_height / HEIGHT * WIDTH)
         self.width = width
         self.height = width / WIDTH * HEIGHT
+        self.hAlign = 'CENTER'
 
     def draw(self):
         c = self.canv
@@ -138,7 +141,7 @@ class BpmnDiagram(Flowable):
             for delta in (-.5, .5):
                 tip.lineTo(x-10*math.cos(angle+delta), HEIGHT-y+10*math.sin(angle+delta))
             tip.close(); c.setFillColor(INK); c.drawPath(tip, fill=1, stroke=0)
-            if fid in ('F4','F6','F9'):
+            if fid in DEFAULT_FLOWS.values():
                 x,y=points[0]; c.line(x+13,HEIGHT-y+8,x+23,HEIGHT-y-8)
             if lb: text_box([label],lb,19)
         for nid, kind, bounds, lines, lb in NODES:
@@ -167,7 +170,7 @@ def furniture(canvas, doc):
     canvas.setFont('BodyBold',8);canvas.setFillColor(TEAL)
     canvas.drawString(46,A4[1]-28,'CARDLAB / PYTHON HAKATONI')
     canvas.setFont('Body',8);canvas.setFillColor(GRAY)
-    canvas.drawRightString(A4[0]-46,A4[1]-28,'ISHTIROKCHI UCHUN · BT v1.0')
+    canvas.drawRightString(A4[0]-46,A4[1]-28,'ISHTIROKCHI UCHUN · BT v1.1')
     canvas.line(46,37,A4[0]-46,37)
     canvas.drawString(46,24,"Demo ma'lumotlar | 120 daqiqa | 2-3 kishilik jamoa")
     canvas.drawRightString(A4[0]-46,24,str(doc.page))
@@ -192,14 +195,14 @@ def build():
     story+=markdown("### Sizning vazifangiz\nBTni o'qing. Xatolarni takrorlang. Python kodini tuzating. Natijani test bilan isbotlang. Har bir tuzatish sababini hisobotga yozing.")
     story.append(PageBreak());story+=markdown(rules)
     story.append(PageBreak());story+=markdown('## 4. Amaliyotlar (davomi)\n'+operations)
-    story.append(PageBreak());story+=markdown("## 5. BPMN - pul o'tkazish\nKiritma to'g'ri: summa R1ga mos, ikkala ID mavjud va ular turlicha.")
-    story.append(BpmnDiagram(BODY_WIDTH-36))
+    story.append(PageBreak());story+=markdown("## 5. BPMN - pul o'tkazish\nKiritma to'g'ri: summa R1ga mos, ikkala ID mavjud va turlicha, komissiya usuli additional yoki deduct.")
+    story.append(BpmnDiagram(BODY_WIDTH-36, max_height=575))
     story.append(Paragraph("Aylana - hodisa. Yumaloq to'rtburchak - vazifa. X romb - bitta yo'l tanlash yoki yo'llarni birlashtirish. Strelka - ketma-ketlik. Yo'q yo'llari rad etishga olib boradi.",styles['small']))
     story.append(Paragraph('Tahrirlash: transfer.bpmn. Notatsiya: <link href="https://www.omg.org/spec/BPMN/2.0.2/" color="#007D78">OMG BPMN 2.0.2</link>. Qolgan amaliyotlar 4-bo\'limda.',styles['small']))
     story.append(PageBreak());story+=markdown(scenario_intro+first_tests)
     story.append(PageBreak());story+=markdown('## 6. Qabul ssenariylari (davomi)\n'+next_tests)
     story.append(PageBreak());story+=markdown(technical+'## 8.'+assessment)
-    story+=markdown("### Ishga tushirish\nTerminalni project papkasida oching.\n```text\npython app.py\npython -m unittest -v test_smoke\n```\nmacOS/Linux: python3; Windows: py ishlatilishi mumkin. Har bir mustaqil sinovdan oldin dastur yopiladi va faqat demo data/bank.json fayli o'chiriladi. T17da faylni o'chirmang. Smoke testlar barcha BT talablarini tekshirmaydi.")
+    story+=markdown("### Ishga tushirish\nTerminalni project papkasida oching.\n```text\npython app.py\npython -m unittest -v test_smoke\n```\nmacOS/Linux: python3; Windows: py ishlatilishi mumkin. Har bir mustaqil sinovdan oldin dastur yopiladi va faqat demo data/bank.json fayli o'chiriladi. T17 va T28da faylni o'chirmang. Smoke testlar barcha BT talablarini tekshirmaydi.")
     OUTPUT.parent.mkdir(parents=True,exist_ok=True)
     doc=SimpleDocTemplate(str(OUTPUT),pagesize=A4,rightMargin=46,leftMargin=46,topMargin=53,bottomMargin=50,
                           title='CardLab - Python hakatoni: biznes talablar va BPMN',author='CardLab',pageCompression=1)

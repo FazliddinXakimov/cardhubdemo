@@ -61,7 +61,7 @@ python app.py
 
 macOS/Linuxda `python3`, Windowsda `py` ham ishlatiladi. Python 3.10+ kerak. Internet va `pip install` kerak emas.
 
-Amaliyotlar: kartalar/balans, demo to'ldirish, 1% komissiya bilan o'tkazish, bloklash/blokdan chiqarish, tarix, JSON saqlash. Barcha ma'lumotlar sintetik.
+Amaliyotlar: kartalar/balans, demo to'ldirish, 1% komissiya bilan o'tkazish (Include commission switchi: komissiya summaga qo'shimcha yoki summaning ichidan), bloklash/blokdan chiqarish, tarix, JSON saqlash. Barcha ma'lumotlar sintetik.
 
 Ishtirokchi loyihasi **ataylab xatoli**. `organizer/run_checks.py` uning talabga zid xatti-harakatlarini aniqlaydi. Tayyor yechim faqat `organizer/reference/` ichida.
 

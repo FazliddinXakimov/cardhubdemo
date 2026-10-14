@@ -1,4 +1,4 @@
-"""Tashkilotchi uchun etalon: CardLab BT v1.0."""
+"""Tashkilotchi uchun etalon: CardLab BT v1.1."""
 
 import copy
 import json
@@ -67,7 +67,7 @@ class Bank:
                 return card
         raise BankError("Karta topilmadi.")
 
-    def _record(self, kind, source, target, amount, fee):
+    def _record(self, kind, source, target, amount, fee, **details):
         transaction = {
             "id": self.data["next_id"],
             "type": kind,
@@ -77,6 +77,7 @@ class Bank:
             "fee": fee,
             "time": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         }
+        transaction.update(details)
         self.data["next_id"] += 1
         self.data["history"].insert(0, transaction)
         return copy.deepcopy(transaction)
@@ -90,7 +91,9 @@ class Bank:
         self.save()
         return transaction
 
-    def transfer(self, source_id, target_id, raw_amount):
+    def transfer(self, source_id, target_id, raw_amount, fee_mode="additional"):
+        if fee_mode not in ("additional", "deduct"):
+            raise BankError("Komissiya usuli noto'g'ri.")
         amount = parse_amount(raw_amount)
         source = self._card(source_id)
         target = self._card(target_id)
@@ -99,12 +102,16 @@ class Bank:
         require_active(source)
         require_active(target)
         fee = calculate_fee(amount)
-        total = amount + fee
+        total = amount if fee_mode == "deduct" else amount + fee
+        received = amount - fee if fee_mode == "deduct" else amount
+        if received <= 0:
+            raise BankError("Komissiyadan keyin oluvchiga kamida 1 so'm tushishi kerak.")
         if source["balance"] < total:
             raise BankError("Balans yetarli emas.")
         source["balance"] -= total
-        target["balance"] += amount
-        transaction = self._record("TRANSFER", source_id, target_id, amount, fee)
+        target["balance"] += received
+        transaction = self._record("TRANSFER", source_id, target_id, amount, fee,
+                                   fee_mode=fee_mode, debited_amount=total, received_amount=received)
         self.save()
         return transaction
 

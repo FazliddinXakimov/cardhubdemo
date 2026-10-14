@@ -1,5 +1,20 @@
 # Tayyor to'plam tekshiruvi
 
+## Include commission switchi, BT v1.1 — 2026-10-14
+
+O'tkazmaga `fee_mode` qo'shildi: `additional` (switch o'chirilgan, standart) — komissiya summaga qo'shimcha yechiladi; `deduct` (switch yoqilgan) — komissiya summaning ichidan olinadi. Python 3.14 muhitida quyidagilar tekshirildi:
+
+- `python3 -m unittest discover -s organizer -p 'test_*.py'`: 24 ta test o'tdi; smoke testlar 3/3.
+- Etalon 70/70 (28 test metodi), xatoli starter 0/70, starterda Regression guruhi o'tadi. Ball taqsimoti o'zgarmadi: switch talablari B5–B8 guruhlariga qo'shildi.
+- Etalonga bittadan xato kiritildi: starterdagi 8 xatoning har biri faqat o'z guruhini yiqitadi. Oluvchiga 0 so'm tekshiruvi yo'qligi — B5; `deduct`da debet noto'g'ri — B6 va B7; tarix maydonlari yo'qligi — B7; `fee_mode` tekshiruvi olib tashlansa — faqat Regression.
+- T21–T28 etalonda hisoblab tasdiqlandi.
+- BPMN XML OMG BPMN 2.0 XSD bilan validatsiyadan o'tdi. Yangi qaror: "Oluvchiga kamida 1 so'm tushadimi?", rad etish yo'llari ikki birlashtiruvchi romb orqali yig'iladi.
+- BT PDF 7 sahifa, har biri ko'zdan kechirildi.
+- Brauzer: switchli va switchsiz o'tkazma hamda noto'g'ri `fee_mode` HTTP orqali sinandi; sahifa Chrome headlessda 1280px va 390px kenglikda, switch o'chiq va yoqilgan holatda ko'rildi. Switch JavaScriptsiz, faqat CSS bilan ishlaydi (CSP inline skriptga ruxsat bermaydi).
+- Terminal: `y` / bo'sh / noto'g'ri javob bilan o'tkazma va tarix chiqishi tekshirildi.
+
+Docker obrazi bu o'zgarishlar bilan qayta yig'ilmagan va Windowsda sinalmagan.
+
 ## Guruhlarga tarqatish va yakuniy baholash — 2026-10-13
 
 Python 3.14.6 muhitida quyidagilar tekshirildi:

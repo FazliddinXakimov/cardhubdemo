@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="CardLabDefinitions" targetNamespace="urn:cardlab:training" exporter="CardLab" exporterVersion="1.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="CardLabDefinitions" targetNamespace="urn:cardlab:training" exporter="CardLab" exporterVersion="1.1">
   <bpmn:process id="TransferProcess" name="CardLab - pul o'tkazish" isExecutable="false">
-    <bpmn:documentation>O'quv jarayoni. Kiritma to'g'ri: summa R1ga mos, ikkala ID mavjud va turlicha. Komissiya 1%, yuqoriga yaxlitlanadi. Barcha rad etishlarda holat o'zgarmaydi.</bpmn:documentation>
+    <bpmn:documentation>O'quv jarayoni. Kiritma to'g'ri: summa R1ga mos, ikkala ID mavjud va turlicha, komissiya usuli additional yoki deduct. Komissiya 1%, yuqoriga yaxlitlanadi. Include commission yoqilganda komissiya summadan olinadi va oluvchiga kamida 1 so'm tushadi. Barcha rad etishlarda holat o'zgarmaydi.</bpmn:documentation>
     <bpmn:startEvent id="Start" name="Boshlash">
       <bpmn:outgoing>F1</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:task id="Input" name="Yuboruvchi, oluvchi va&#10;summani kiritish">
+    <bpmn:task id="Input" name="Kartalar, summa va&#10;komissiya usulini kiritish">
       <bpmn:incoming>F1</bpmn:incoming>
       <bpmn:outgoing>F2</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:exclusiveGateway id="Valid" name="Summa va IDlar&#10;to'g'rimi? [R1]" gatewayDirection="Diverging" default="F4">
+    <bpmn:exclusiveGateway id="Valid" name="Summa, IDlar va&#10;usul to'g'rimi? [R1]" gatewayDirection="Diverging" default="F4">
       <bpmn:incoming>F2</bpmn:incoming>
       <bpmn:outgoing>F3</bpmn:outgoing>
       <bpmn:outgoing>F4</bpmn:outgoing>
@@ -19,58 +19,73 @@
       <bpmn:outgoing>F5</bpmn:outgoing>
       <bpmn:outgoing>F6</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="Fee" name="Komissiya va jami&#10;yechimni hisoblash">
+    <bpmn:task id="Fee" name="Komissiya, jami yechim&#10;va oluvchiga tushadigan&#10;summani hisoblash">
       <bpmn:incoming>F5</bpmn:incoming>
       <bpmn:outgoing>F7</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:exclusiveGateway id="Funds" name="Balans jami&#10;yechimga yetadimi?" gatewayDirection="Diverging" default="F9">
+    <bpmn:exclusiveGateway id="Received" name="Oluvchiga kamida&#10;1 so'm tushadimi?" gatewayDirection="Diverging" default="F9">
       <bpmn:incoming>F7</bpmn:incoming>
       <bpmn:outgoing>F8</bpmn:outgoing>
       <bpmn:outgoing>F9</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="Update" name="Ikkala balansni&#10;yangilash">
+    <bpmn:exclusiveGateway id="Funds" name="Balans jami&#10;yechimga yetadimi?" gatewayDirection="Diverging" default="F11">
       <bpmn:incoming>F8</bpmn:incoming>
       <bpmn:outgoing>F10</bpmn:outgoing>
+      <bpmn:outgoing>F11</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Update" name="Ikkala balansni&#10;yangilash">
+      <bpmn:incoming>F10</bpmn:incoming>
+      <bpmn:outgoing>F13</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Save" name="Bitta tarix yozuvi&#10;yaratish va saqlash">
-      <bpmn:incoming>F10</bpmn:incoming>
-      <bpmn:outgoing>F11</bpmn:outgoing>
+      <bpmn:incoming>F13</bpmn:incoming>
+      <bpmn:outgoing>F14</bpmn:outgoing>
     </bpmn:task>
     <bpmn:endEvent id="Success" name="Bajarildi">
-      <bpmn:incoming>F11</bpmn:incoming>
+      <bpmn:incoming>F14</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:exclusiveGateway id="RejectMerge" gatewayDirection="Converging">
+    <bpmn:exclusiveGateway id="RejectMerge1" gatewayDirection="Converging">
       <bpmn:incoming>F4</bpmn:incoming>
       <bpmn:incoming>F6</bpmn:incoming>
       <bpmn:incoming>F9</bpmn:incoming>
       <bpmn:outgoing>F12</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="Reject" name="Sababni ko'rsatish&#10;Holat o'zgarmaydi&#10;[R3]">
+    <bpmn:exclusiveGateway id="RejectMerge2" gatewayDirection="Converging">
+      <bpmn:incoming>F11</bpmn:incoming>
       <bpmn:incoming>F12</bpmn:incoming>
-      <bpmn:outgoing>F13</bpmn:outgoing>
+      <bpmn:outgoing>F15</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Reject" name="Sababni ko'rsatish&#10;Holat o'zgarmaydi&#10;[R3]">
+      <bpmn:incoming>F15</bpmn:incoming>
+      <bpmn:outgoing>F16</bpmn:outgoing>
     </bpmn:task>
     <bpmn:endEvent id="Rejected" name="Rad etildi">
-      <bpmn:incoming>F13</bpmn:incoming>
+      <bpmn:incoming>F16</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="F1" sourceRef="Start" targetRef="Input" />
     <bpmn:sequenceFlow id="F2" sourceRef="Input" targetRef="Valid" />
     <bpmn:sequenceFlow id="F3" sourceRef="Valid" targetRef="Active" name="Ha">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">valid_input</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="F4" sourceRef="Valid" targetRef="RejectMerge" name="Yo'q" />
+    <bpmn:sequenceFlow id="F4" sourceRef="Valid" targetRef="RejectMerge1" name="Yo'q" />
     <bpmn:sequenceFlow id="F5" sourceRef="Active" targetRef="Fee" name="Ha">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">cards_active</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="F6" sourceRef="Active" targetRef="RejectMerge" name="Yo'q" />
-    <bpmn:sequenceFlow id="F7" sourceRef="Fee" targetRef="Funds" />
-    <bpmn:sequenceFlow id="F8" sourceRef="Funds" targetRef="Update" name="Ha">
+    <bpmn:sequenceFlow id="F6" sourceRef="Active" targetRef="RejectMerge1" name="Yo'q" />
+    <bpmn:sequenceFlow id="F7" sourceRef="Fee" targetRef="Received" />
+    <bpmn:sequenceFlow id="F8" sourceRef="Received" targetRef="Funds" name="Ha">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">receiver_gets_money</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="F9" sourceRef="Received" targetRef="RejectMerge1" name="Yo'q" />
+    <bpmn:sequenceFlow id="F10" sourceRef="Funds" targetRef="Update" name="Ha">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">balance_sufficient</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="F9" sourceRef="Funds" targetRef="RejectMerge" name="Yo'q" />
-    <bpmn:sequenceFlow id="F10" sourceRef="Update" targetRef="Save" />
-    <bpmn:sequenceFlow id="F11" sourceRef="Save" targetRef="Success" />
-    <bpmn:sequenceFlow id="F12" sourceRef="RejectMerge" targetRef="Reject" />
-    <bpmn:sequenceFlow id="F13" sourceRef="Reject" targetRef="Rejected" />
+    <bpmn:sequenceFlow id="F11" sourceRef="Funds" targetRef="RejectMerge2" name="Yo'q" />
+    <bpmn:sequenceFlow id="F12" sourceRef="RejectMerge1" targetRef="RejectMerge2" />
+    <bpmn:sequenceFlow id="F13" sourceRef="Update" targetRef="Save" />
+    <bpmn:sequenceFlow id="F14" sourceRef="Save" targetRef="Success" />
+    <bpmn:sequenceFlow id="F15" sourceRef="RejectMerge2" targetRef="Reject" />
+    <bpmn:sequenceFlow id="F16" sourceRef="Reject" targetRef="Rejected" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="Diagram">
     <bpmndi:BPMNPlane id="Plane" bpmnElement="TransferProcess">
@@ -96,36 +111,45 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Fee_di" bpmnElement="Fee">
-        <dc:Bounds x="80" y="490" width="300" height="72" />
+        <dc:Bounds x="80" y="490" width="300" height="96" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Received_di" bpmnElement="Received" isMarkerVisible="true">
+        <dc:Bounds x="190" y="642" width="80" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="10" y="649" width="170" height="58" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Funds_di" bpmnElement="Funds" isMarkerVisible="true">
-        <dc:Bounds x="190" y="618" width="80" height="80" />
+        <dc:Bounds x="190" y="784" width="80" height="80" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="10" y="625" width="170" height="58" />
+          <dc:Bounds x="10" y="791" width="170" height="58" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Update_di" bpmnElement="Update">
-        <dc:Bounds x="80" y="756" width="300" height="72" />
+        <dc:Bounds x="80" y="922" width="300" height="72" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Save_di" bpmnElement="Save">
-        <dc:Bounds x="80" y="882" width="300" height="72" />
+        <dc:Bounds x="80" y="1048" width="300" height="72" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Success_di" bpmnElement="Success">
-        <dc:Bounds x="212" y="1012" width="36" height="36" />
+        <dc:Bounds x="212" y="1178" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="270" y="1016" width="170" height="30" />
+          <dc:Bounds x="270" y="1182" width="170" height="30" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="RejectMerge_di" bpmnElement="RejectMerge" isMarkerVisible="true">
-        <dc:Bounds x="654" y="622" width="72" height="72" />
+      <bpmndi:BPMNShape id="RejectMerge1_di" bpmnElement="RejectMerge1" isMarkerVisible="true">
+        <dc:Bounds x="654" y="646" width="72" height="72" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="RejectMerge2_di" bpmnElement="RejectMerge2" isMarkerVisible="true">
+        <dc:Bounds x="654" y="788" width="72" height="72" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Reject_di" bpmnElement="Reject">
-        <dc:Bounds x="540" y="756" width="300" height="96" />
+        <dc:Bounds x="540" y="922" width="300" height="96" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Rejected_di" bpmnElement="Rejected">
-        <dc:Bounds x="672" y="918" width="36" height="36" />
+        <dc:Bounds x="672" y="1084" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="730" y="922" width="160" height="30" />
+          <dc:Bounds x="730" y="1088" width="160" height="30" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="F1_di" bpmnElement="F1">
@@ -146,7 +170,7 @@
       <bpmndi:BPMNEdge id="F4_di" bpmnElement="F4">
         <di:waypoint x="270" y="254" />
         <di:waypoint x="690" y="254" />
-        <di:waypoint x="690" y="622" />
+        <di:waypoint x="690" y="646" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="405" y="220" width="60" height="26" />
         </bpmndi:BPMNLabel>
@@ -161,45 +185,63 @@
       <bpmndi:BPMNEdge id="F6_di" bpmnElement="F6">
         <di:waypoint x="270" y="396" />
         <di:waypoint x="810" y="396" />
-        <di:waypoint x="810" y="658" />
-        <di:waypoint x="726" y="658" />
+        <di:waypoint x="810" y="682" />
+        <di:waypoint x="726" y="682" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="405" y="362" width="60" height="26" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="F7_di" bpmnElement="F7">
-        <di:waypoint x="230" y="562" />
-        <di:waypoint x="230" y="618" />
+        <di:waypoint x="230" y="586" />
+        <di:waypoint x="230" y="642" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="F8_di" bpmnElement="F8">
-        <di:waypoint x="230" y="698" />
-        <di:waypoint x="230" y="756" />
+        <di:waypoint x="230" y="722" />
+        <di:waypoint x="230" y="784" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="245" y="711" width="40" height="26" />
+          <dc:Bounds x="245" y="739" width="40" height="26" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="F9_di" bpmnElement="F9">
-        <di:waypoint x="270" y="658" />
-        <di:waypoint x="654" y="658" />
+        <di:waypoint x="270" y="682" />
+        <di:waypoint x="654" y="682" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="405" y="624" width="60" height="26" />
+          <dc:Bounds x="405" y="648" width="60" height="26" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="F10_di" bpmnElement="F10">
-        <di:waypoint x="230" y="828" />
-        <di:waypoint x="230" y="882" />
+        <di:waypoint x="230" y="864" />
+        <di:waypoint x="230" y="922" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="245" y="879" width="40" height="26" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="F11_di" bpmnElement="F11">
-        <di:waypoint x="230" y="954" />
-        <di:waypoint x="230" y="1012" />
+        <di:waypoint x="270" y="824" />
+        <di:waypoint x="654" y="824" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="405" y="790" width="60" height="26" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="F12_di" bpmnElement="F12">
-        <di:waypoint x="690" y="694" />
-        <di:waypoint x="690" y="756" />
+        <di:waypoint x="690" y="718" />
+        <di:waypoint x="690" y="788" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="F13_di" bpmnElement="F13">
-        <di:waypoint x="690" y="852" />
-        <di:waypoint x="690" y="918" />
+        <di:waypoint x="230" y="994" />
+        <di:waypoint x="230" y="1048" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F14_di" bpmnElement="F14">
+        <di:waypoint x="230" y="1120" />
+        <di:waypoint x="230" y="1178" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F15_di" bpmnElement="F15">
+        <di:waypoint x="690" y="860" />
+        <di:waypoint x="690" y="922" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F16_di" bpmnElement="F16">
+        <di:waypoint x="690" y="1018" />
+        <di:waypoint x="690" y="1084" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

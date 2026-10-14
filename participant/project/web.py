@@ -62,10 +62,17 @@ def page(session):
     rows = []
     for tx in history:
         kind = "Pul o'tkazish" if tx["type"] == "TRANSFER" else "Hisobni to'ldirish"
+        detail = ""
+        if tx["type"] == "TRANSFER":
+            mode = "ON" if tx.get("fee_mode") == "deduct" else "OFF"
+            debited = tx.get("debited_amount", tx["amount"] + tx["fee"])
+            received = tx.get("received_amount", tx["amount"])
+            detail = (f'<small class="tx-detail">Include commission: {mode}</small>'
+                      f'<small class="tx-detail">Yechildi: {money(debited)} · Oluvchiga: {money(received)}</small>')
         timestamp = datetime.fromisoformat(tx["time"]).astimezone(timezone(timedelta(hours=5)))
         rows.append(f'''<tr><td><span class="transaction-kind">{kind}</span><small>#{tx['id']}</small></td>
           <td>{esc(tx['source'] or 'DEMO')} → {esc(tx['target'])}</td>
-          <td class="numeric">{money(tx['amount'])} <small>so'm</small></td>
+          <td class="numeric">{money(tx['amount'])} <small>so'm</small>{detail}</td>
           <td class="numeric">{money(tx['fee'])} <small>so'm</small></td>
           <td class="date">{timestamp:%d.%m.%Y}<small>{timestamp:%H:%M:%S}</small></td></tr>''')
     if not rows:
@@ -87,7 +94,7 @@ def page(session):
         <p>Amaliyotlarni sinang, natijani BT bilan solishtiring va Python kodidagi xatolarni toping.</p></div>
         <div class="timebox"><strong>120<span> daqiqa</span></strong><small>2–3 kishilik jamoa uchun</small></div></section>
         <section class="lab-tools" aria-label="Topshiriq materiallari va sinov holati">
-          <a class="lab-tool" href="/materials/BT.pdf" target="_blank" rel="noopener"><span class="tool-symbol" aria-hidden="true">↗</span><span><strong>Biznes talablar</strong><small>PDF · 20 ta ssenariy</small></span></a>
+          <a class="lab-tool" href="/materials/BT.pdf" target="_blank" rel="noopener"><span class="tool-symbol" aria-hidden="true">↗</span><span><strong>Biznes talablar</strong><small>PDF · 28 ta ssenariy</small></span></a>
           <a class="lab-tool" href="/materials/transfer-bpmn.svg" target="_blank" rel="noopener"><span class="tool-symbol" aria-hidden="true">↗</span><span><strong>BPMN jarayoni</strong><small>Pul o'tkazish chizmasi</small></span></a>
           <form method="post" action="/action">{field('reopen', csrf)}<button class="lab-tool" type="submit"><span class="tool-symbol" aria-hidden="true">↻</span><span><strong>Dasturni qayta ochish</strong><small>Saqlangan holatni yuklash</small></span></button></form>
           <form method="post" action="/action">{field('reset', csrf)}<button class="lab-tool" type="submit"><span class="tool-symbol" aria-hidden="true">⟲</span><span><strong>Boshidan boshlash</strong><small>Demo holatini tozalash</small></span></button></form>
@@ -103,6 +110,11 @@ def page(session):
               <div class="input-grid"><label>Yuboruvchi karta<select name="source">{options(cards,'C1')}</select></label>
               <label>Qabul qiluvchi karta<select name="target">{options(cards,'C2')}</select></label></div>
               <label>O'tkazma summasi<div class="amount-field"><input name="amount" type="text" inputmode="decimal" placeholder="Masalan, 50000" autocomplete="off" aria-label="O'tkazma summasi"><span>so'm</span></div></label>
+              <div class="commission-control">
+                <input class="switch-input" id="fee-mode" type="checkbox" role="switch" name="fee_mode" value="deduct" aria-describedby="commission-help">
+                <label class="commission-switch" for="fee-mode"><span><strong>Include commission</strong><small>Komissiyani summaning ichidan olish</small></span><span class="switch-track" aria-hidden="true"></span></label>
+                <small id="commission-help"><span class="commission-off">O‘chirilgan: komissiya summaga qo‘shimcha yechiladi. 50 000 so‘m → yechim 50 500, oluvchiga 50 000.</span><span class="commission-on">Yoqilgan: komissiya summaning ichidan olinadi. 50 000 so‘m → yechim 50 000, oluvchiga 49 500.</span></small>
+              </div>
               <div class="form-bottom"><small>Summani bo‘shliqlarsiz kiriting.</small><button class="primary" type="submit">O'tkazish <span>↗</span></button></div>
             </form></article>
           <article class="panel"><div class="panel-heading"><span class="action-icon light">+</span><div><h2>Hisobni to'ldirish</h2><p>Tanlangan kartaga demo mablag‘ qo‘shing.</p></div></div>
@@ -203,8 +215,9 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 action = get("action")
                 if action == "transfer":
-                    tx = bank.transfer(get("source"), get("target"), get("amount"))
-                    message = f"O'tkazma bajarildi. Amaliyot #{tx['id']}. Komissiya: {money(tx['fee'])} so'm."
+                    tx = bank.transfer(get("source"), get("target"), get("amount"), get("fee_mode") or "additional")
+                    message = (f"O'tkazma bajarildi. Amaliyot #{tx['id']}. Komissiya: {money(tx['fee'])} so'm. "
+                               f"Yechildi: {money(tx['debited_amount'])}; oluvchiga: {money(tx['received_amount'])} so'm.")
                 elif action == "top_up":
                     tx = bank.top_up(get("card"), get("amount"))
                     message = f"Hisob to'ldirildi. Amaliyot #{tx['id']}."

@@ -26,6 +26,20 @@ def show_history(bank):
         route = f"{item['source'] or 'DEMO'} -> {item['target']}"
         print(f"#{item['id']} | {item['type']} | {route} | {money(item['amount'])} "
               f"| Komissiya: {money(item['fee'])} | {item['time']}")
+        if item["type"] == "TRANSFER":
+            mode = "ON" if item.get("fee_mode") == "deduct" else "OFF"
+            debited = item.get("debited_amount", item["amount"] + item["fee"])
+            received = item.get("received_amount", item["amount"])
+            print(f"  Include commission: {mode} | Yechildi: {money(debited)} | Oluvchiga: {money(received)}")
+
+
+def ask_fee_mode(answer):
+    answer = answer.strip().lower()
+    if answer in ("", "n"):
+        return "additional"
+    if answer == "y":
+        return "deduct"
+    raise BankError("Include commission uchun y yoki n kiriting.")
 
 
 def main():
@@ -51,9 +65,13 @@ def main():
                 source = input("Yuboruvchi karta ID: ").strip().upper()
                 target = input("Qabul qiluvchi karta ID: ").strip().upper()
                 amount = input("Summa (butun so'm): ").strip()
-                transaction = bank.transfer(source, target, amount)
+                answer = input("Include commission - komissiya summaning ichidan olinsinmi? [y/N]: ")
+                fee_mode = ask_fee_mode(answer)
+                transaction = bank.transfer(source, target, amount, fee_mode)
                 print(f"O'tkazma bajarildi. Amaliyot #{transaction['id']}. "
-                      f"Komissiya: {money(transaction['fee'])}.")
+                      f"Komissiya: {money(transaction['fee'])}. "
+                      f"Yechildi: {money(transaction['debited_amount'])}; "
+                      f"oluvchiga: {money(transaction['received_amount'])}.")
             elif choice == "4":
                 card_id = input("Karta ID: ").strip().upper()
                 blocked = bank.toggle_block(card_id)

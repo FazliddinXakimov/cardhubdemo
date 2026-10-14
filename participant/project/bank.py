@@ -60,7 +60,7 @@ class Bank:
                 return card
         raise BankError("Karta topilmadi.")
 
-    def _record(self, kind, source, target, amount, fee):
+    def _record(self, kind, source, target, amount, fee, **details):
         transaction = {
             "id": self.data["next_id"],
             "type": kind,
@@ -70,6 +70,7 @@ class Bank:
             "fee": fee,
             "time": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         }
+        transaction.update(details)
         self.data["next_id"] += 1
         self.data["history"].insert(0, transaction)
         return copy.deepcopy(transaction)
@@ -82,17 +83,20 @@ class Bank:
         self.save()
         return transaction
 
-    def transfer(self, source_id, target_id, raw_amount):
+    def transfer(self, source_id, target_id, raw_amount, fee_mode="additional"):
+        if fee_mode not in ("additional", "deduct"):
+            raise BankError("Komissiya usuli noto'g'ri.")
         amount = parse_amount(raw_amount)
         source = self._card(source_id)
         target = self._card(target_id)
         fee = calculate_fee(amount)
-        total = amount + fee
+        total = amount if fee_mode == "deduct" else amount + fee
         if source["balance"] < amount:
             raise BankError("Balans yetarli emas.")
         source["balance"] -= total
         target["balance"] += total
-        transaction = self._record("TRANSFER", source_id, target_id, amount, fee)
+        transaction = self._record("TRANSFER", source_id, target_id, amount, fee,
+                                   fee_mode=fee_mode, debited_amount=total, received_amount=total)
         self.save()
         return transaction
 
