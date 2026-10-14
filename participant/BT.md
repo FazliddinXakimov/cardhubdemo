@@ -1,12 +1,20 @@
 # CARDLAB - KARTALAR BILAN AMALIYOTLAR
 
-**Biznes talablar (BT) va amaliy topshiriq | v1.1 | Python**
+**Biznes talablar (BT) va amaliy topshiriq | v1.2 | Python**
 
 Daraja: Python asoslarini biladigan maktab o'quvchilari. Tavsiya: 120 daqiqa, jamoada 2-3 kishi. Kerakli bilimlar: funksiya, shart, lug'at, ro'yxat, fayl va sodda klass bilan ishlash.
 
 ## 1. Vaziyat va vazifa
 
-CardLab demo hamyonidagi karta amaliyotlari noto'g'ri ishlayapti. Sizga terminalda ishga tushadigan, ichiga ataylab biznes mantiq xatolari kiritilgan Python loyihasi beriladi. BT va BPMN asosida xatolarni toping, sababini aniqlang, tuzating va tekshiring.
+CardLab demo hamyonida ikkita shartni ketma-ket bajaring. Sizga ataylab xatolar kiritilgan Python loyihasi beriladi.
+
+### 1-shart. Xatolarni to'g'rilash
+
+Mavjud amaliyotlardagi xatolarni toping, sababini aniqlang va tuzating: summa tekshiruvi, karta holati, oddiy o'tkazma, 1% komissiya, balanslar, tarix va JSON saqlash. Bu bosqichda komissiya summaga qo'shimcha yechiladi (`additional`), Include commission o'chirilgan. Natijani T01-T20 bilan tekshiring.
+
+### 2-shart. Yangi funksiya - Include commission
+
+Komissiyani kiritilgan summaning ichidan olish imkoniyatini qo'shing (`deduct`). Starterda bu funksiya amalga oshirilmagan; terminal savoli va brauzer switchi tayyor interfeys sifatida berilgan. Hisoblash, tekshiruv, tarix va saqlashni BT asosida qo'shing. Natijani T21-T28 bilan tekshiring va T01-T20 hamon o'tishini tasdiqlang.
 
 Natija: foydalanuvchi balansni ko'ra oladigan, demo hisobni to'ldiradigan, boshqa kartaga komissiyani ustidan yoki summaning ichidan olib pul o'tkazadigan, kartani bloklaydigan va tarixni ko'radigan to'g'ri ishlovchi dastur.
 
@@ -88,6 +96,8 @@ Tahrirlash uchun `transfer.bpmn` BPMN 2.0 XML fayli ham berilgan. Chizma pul o't
 
 ## 6. Qabul qilish ssenariylari
 
+**1-shart: T01-T20. 2-shart: T21-T28.** BPMN ikkala shart bajarilgandan keyingi yakuniy jarayonni ko'rsatadi.
+
 Har qator mustaqil. Alohida ko'rsatilmagan bo'lsa, 2-bo'limdagi boshlang'ich holatdan boshlang va Include commission o'chirilgan bo'lsin. "ON" - switch yoqilgan. Rad etilgan barcha holatlarda R3ni ham tekshiring.
 
 | ID | Amal | Kutilgan natija |
@@ -125,9 +135,11 @@ Har qator mustaqil. Alohida ko'rsatilmagan bo'lsa, 2-bo'limdagi boshlang'ich hol
 
 Python 3.10+, faqat standart kutubxona. `python app.py` bilan ishlashi kerak. Ma'lumotlar JSON faylida. `Bank` klassi, `BankError`, `cards`, `history`, `top_up`, `transfer`, `toggle_block`, `save` metodlari va mavjud ma'lumot maydonlari saqlansin. O'tkazma imzosi: `transfer(source_id, target_id, raw_amount, fee_mode="additional")`. Ichki funksiyalarni o'zgartirish va qo'shish mumkin.
 
-Topshiring: tuzatilgan loyiha, kamida 3 ta mazmunli qo'shimcha `unittest` testi va to'ldirilgan `HISOBOT.md`. Testlardan biri rad etishda holat o'zgarmasligini, biri komissiyani (ikkala usulda), biri qayta ishga tushganda saqlanishni tekshirsin. Tuzatishlarni 3 daqiqalik namoyishda tushuntiring.
+Topshiring: xatolari tuzatilgan va Include commission funksiyasi qo'shilgan loyiha, kamida 3 ta mazmunli qo'shimcha `unittest` testi va to'ldirilgan `HISOBOT.md`. Testlardan biri rad etishda holat o'zgarmasligini, biri komissiyani (ikkala usulda), biri qayta ishga tushganda saqlanishni tekshirsin. Tuzatishlarni 3 daqiqalik namoyishda tushuntiring.
 
 ## 8. Baholash - 100 ball
+
+Ikkala shart majburiy. Quyidagi 70 funksional ball yakuniy yechimni baholaydi: komissiya, balans, tarix va saqlash mezonlarida ikkala usul ham tekshiriladi. Hisobotda va namoyishda har bir shart natijasini alohida ko'rsating.
 
 | Mezon | Ball |
 |---|---:|
@@ -139,9 +151,9 @@ Topshiring: tuzatilgan loyiha, kamida 3 ta mazmunli qo'shimcha `unittest` testi 
 | Komissiya usuliga mos balans tekshiruvi va tenglik holati | 10 |
 | Ikkala komissiya usulida balanslarni to'g'ri o'zgartirish va tarixni to'g'ri yuritish | 10 |
 | JSON saqlash va qayta yuklash | 10 |
-| Xatolar hisoboti: takrorlash, sabab, tuzatish dalili | 15 |
+| Hisobot: xatolar sababi, tuzatish va yangi funksiya dalili | 15 |
 | Qo'shimcha testlar va o'qilishi oson kod | 10 |
 | 3 daqiqalik namoyish va tushuntirish | 5 |
 | **Jami** | **100** |
 
-Tavsiya etilgan vaqt: BT/BPMNni o'qish 15 daqiqa; xatolarni takrorlash 20; tuzatish 50; test va hisobot 25; topshirish va namoyish 10. Vazifa yangi loyiha yozish emas, berilgan loyihani talabga mos ishlatishdir.
+Tavsiya etilgan vaqt: BT/BPMNni o'qish 15 daqiqa; xatolarni takrorlash 20; 1-shart 30; 2-shart 20; test va hisobot 25; topshirish va namoyish 10. Vazifa yangi loyiha yozish emas, berilgan loyihani talabga mos ishlatishdir.

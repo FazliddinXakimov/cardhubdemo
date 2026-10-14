@@ -1,6 +1,6 @@
 # CardLab - maktab o'quvchilari uchun Python hakatoni
 
-Tayyor format: **BT + BPMN + ataylab xato kiritilgan Python loyihasi**. O'quvchilar BTga qarab karta amaliyotlarini tuzatadi. Tavsiya etilgan davomiylik 120 daqiqa, jamoa 2-3 kishi.
+Tayyor format: **BT + BPMN + ataylab xato kiritilgan Python loyihasi**. **1-shart:** BTga qarab mavjud xatolarni to'g'rilash (T01-T20). **2-shart:** Include commission funksiyasini qo'shish (T21-T28). Starterda bu funksiyaning interfeysi tayyor, `deduct` mantiqi hali amalga oshirilmagan. Tavsiya etilgan davomiylik 120 daqiqa, jamoa 2-3 kishi.
 
 ## Asosiy materiallar
 

@@ -28,6 +28,11 @@ python -m unittest -v test_smoke
 
 Ushbu 3 test dastur ishga tushishini tekshiradi. Ularning o'tishi barcha biznes qoidalari to'g'ri degani emas. Qo'shimcha testlarni BT asosida o'zingiz yozing.
 
+## Ikkita shart
+
+1. **Xatolarni to'g'rilash:** mavjud amaliyotlarni Include commission o'chirilgan holda tuzating (BT: T01-T20).
+2. **Include commission qo'shish:** `deduct` usulida komissiyani summa ichidan oling (BT: T21-T28). Terminal savoli va brauzer switchi tayyor; `bank.py` hozir bu usul uchun funksiya hali qo'shilmaganini bildiradi. Hisoblash, tekshiruv, tarix va saqlashni amalga oshiring, avvalgi testlarni ham qayta bajaring.
+
 ## Fayllar
 
 - `app.py` - terminal menyusi.

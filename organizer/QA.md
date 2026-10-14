@@ -1,5 +1,14 @@
 # Tayyor to'plam tekshiruvi
 
+## Ikki shartli topshiriq, BT v1.2 - 2026-10-14
+
+- 1-shart: mavjud xatolarni to'g'rilash (T01-T20). 2-shart: Include commission funksiyasini qo'shish (T21-T28).
+- Starterda `deduct` amalga oshirilmagan; BankError chiqarishi va balans, tarix, keyingi ID hamda fayl o'zgarmasligi tekshirildi. Interfeys tayyor shablon sifatida qoldi.
+- Tashkilotchi testlari 24/24, ishtirokchi smoke testlari 3/3 o'tdi. Etalon 70/70; starter 0/70 va Regression o'tdi.
+- BT, hisobot, jamoa yo'riqnomasi va brauzer matnlari ikki shartga moslandi. Yakuniy baholash 70+30 bo'lib qoldi.
+- PDF 7 sahifa; render qilingan sahifalar ko'zdan kechirildi. Tarqatish ZIP fayllari qayta yaratildi va yaxlitligi tekshirildi.
+- Docker yangi materiallar bilan qayta yig'ildi va konteyner healthy. Konteyner ichida smoke testlar 3/3; HTTP orqali /healthz, bosh sahifadagi ikkala shart, BT PDF va ishtirokchi ZIP tekshirildi (200). Quyidagi yozuvlar oldingi versiyalar tekshiruv tarixidir.
+
 ## Include commission switchi, BT v1.1 — 2026-10-14
 
 O'tkazmaga `fee_mode` qo'shildi: `additional` (switch o'chirilgan, standart) — komissiya summaga qo'shimcha yechiladi; `deduct` (switch yoqilgan) — komissiya summaning ichidan olinadi. Python 3.14 muhitida quyidagilar tekshirildi:

@@ -91,7 +91,7 @@ def page(session):
         <a class="nav-download" href="/download/participant.zip">Loyihani yuklab olish ↓</a></nav></header>
       <main><section class="intro"><div><div class="eyebrow"><span></span> MAKTAB HAKATONI · AMALIY MUHIT</div>
         <h1>Kartalar bilan <span>tajriba qiling.</span></h1>
-        <p>Amaliyotlarni sinang, natijani BT bilan solishtiring va Python kodidagi xatolarni toping.</p></div>
+        <p>1-shart: mavjud xatolarni to‘g‘rilang. 2-shart: Include commission funksiyasini qo‘shing.</p></div>
         <div class="timebox"><strong>120<span> daqiqa</span></strong><small>2–3 kishilik jamoa uchun</small></div></section>
         <section class="lab-tools" aria-label="Topshiriq materiallari va sinov holati">
           <a class="lab-tool" href="/materials/BT.pdf" target="_blank" rel="noopener"><span class="tool-symbol" aria-hidden="true">↗</span><span><strong>Biznes talablar</strong><small>PDF · 28 ta ssenariy</small></span></a>
@@ -112,10 +112,10 @@ def page(session):
               <label>O'tkazma summasi<div class="amount-field"><input name="amount" type="text" inputmode="decimal" placeholder="Masalan, 50000" autocomplete="off" aria-label="O'tkazma summasi"><span>so'm</span></div></label>
               <div class="commission-control">
                 <input class="switch-input" id="fee-mode" type="checkbox" role="switch" name="fee_mode" value="deduct" aria-describedby="commission-help">
-                <label class="commission-switch" for="fee-mode"><span><strong>Include commission</strong><small>Komissiyani summaning ichidan olish</small></span><span class="switch-track" aria-hidden="true"></span></label>
+                <label class="commission-switch" for="fee-mode"><span><strong>Include commission</strong><small>2-shart · Komissiyani summaning ichidan olish</small></span><span class="switch-track" aria-hidden="true"></span></label>
                 <small id="commission-help"><span class="commission-off">O‘chirilgan: komissiya summaga qo‘shimcha yechiladi. 50 000 so‘m → yechim 50 500, oluvchiga 50 000.</span><span class="commission-on">Yoqilgan: komissiya summaning ichidan olinadi. 50 000 so‘m → yechim 50 000, oluvchiga 49 500.</span></small>
               </div>
-              <div class="form-bottom"><small>Summani bo‘shliqlarsiz kiriting.</small><button class="primary" type="submit">O'tkazish <span>↗</span></button></div>
+              <div class="form-bottom"><small>Include commission mantiqini 2-shartda qo‘shing.</small><button class="primary" type="submit">O'tkazish <span>↗</span></button></div>
             </form></article>
           <article class="panel"><div class="panel-heading"><span class="action-icon light">+</span><div><h2>Hisobni to'ldirish</h2><p>Tanlangan kartaga demo mablag‘ qo‘shing.</p></div></div>
             <form method="post" action="/action" novalidate>{field('top_up', csrf)}

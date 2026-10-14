@@ -86,11 +86,14 @@ class Bank:
     def transfer(self, source_id, target_id, raw_amount, fee_mode="additional"):
         if fee_mode not in ("additional", "deduct"):
             raise BankError("Komissiya usuli noto'g'ri.")
+        # 2-shart: Include commission funksiyasini BT asosida qo'shing.
+        if fee_mode == "deduct":
+            raise BankError("2-shart: Include commission funksiyasi hali qo'shilmagan.")
         amount = parse_amount(raw_amount)
         source = self._card(source_id)
         target = self._card(target_id)
         fee = calculate_fee(amount)
-        total = amount if fee_mode == "deduct" else amount + fee
+        total = amount + fee
         if source["balance"] < amount:
             raise BankError("Balans yetarli emas.")
         source["balance"] -= total

@@ -41,7 +41,7 @@ class PrepareTeamsTests(unittest.TestCase):
                     {"team_id": team_id, "team_name": name, "members": members},
                 )
                 report = archive.read(f"{team_id}/HISOBOT.md").decode()
-                for value in (team_id, name, members, "## Topilgan va tuzatilgan xatolar"):
+                for value in (team_id, name, members, "## 1-shart. Topilgan va tuzatilgan xatolar", "## 2-shart. Include commission funksiyasi"):
                     self.assertIn(value, report)
                 instructions = archive.read(f"{team_id}/TEAM.md").decode()
                 for value in (f"`{team_id}/`", "`project/`", "`HISOBOT.md`", "`TEAM.json`"):

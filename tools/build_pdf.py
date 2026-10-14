@@ -170,7 +170,7 @@ def furniture(canvas, doc):
     canvas.setFont('BodyBold',8);canvas.setFillColor(TEAL)
     canvas.drawString(46,A4[1]-28,'CARDLAB / PYTHON HAKATONI')
     canvas.setFont('Body',8);canvas.setFillColor(GRAY)
-    canvas.drawRightString(A4[0]-46,A4[1]-28,'ISHTIROKCHI UCHUN · BT v1.1')
+    canvas.drawRightString(A4[0]-46,A4[1]-28,'ISHTIROKCHI UCHUN · BT v1.2')
     canvas.line(46,37,A4[0]-46,37)
     canvas.drawString(46,24,"Demo ma'lumotlar | 120 daqiqa | 2-3 kishilik jamoa")
     canvas.drawRightString(A4[0]-46,24,str(doc.page))
@@ -192,7 +192,6 @@ def build():
     story=[]
     intro=intro.replace('# CARDLAB - KARTALAR BILAN AMALIYOTLAR', '# CardLab\n## Kartalar bilan amaliyotlar')
     story+=markdown(intro)
-    story+=markdown("### Sizning vazifangiz\nBTni o'qing. Xatolarni takrorlang. Python kodini tuzating. Natijani test bilan isbotlang. Har bir tuzatish sababini hisobotga yozing.")
     story.append(PageBreak());story+=markdown(rules)
     story.append(PageBreak());story+=markdown('## 4. Amaliyotlar (davomi)\n'+operations)
     story.append(PageBreak());story+=markdown("## 5. BPMN - pul o'tkazish\nKiritma to'g'ri: summa R1ga mos, ikkala ID mavjud va turlicha, komissiya usuli additional yoki deduct.")
@@ -202,7 +201,6 @@ def build():
     story.append(PageBreak());story+=markdown(scenario_intro+first_tests)
     story.append(PageBreak());story+=markdown('## 6. Qabul ssenariylari (davomi)\n'+next_tests)
     story.append(PageBreak());story+=markdown(technical+'## 8.'+assessment)
-    story+=markdown("### Ishga tushirish\nTerminalni project papkasida oching.\n```text\npython app.py\npython -m unittest -v test_smoke\n```\nmacOS/Linux: python3; Windows: py ishlatilishi mumkin. Har bir mustaqil sinovdan oldin dastur yopiladi va faqat demo data/bank.json fayli o'chiriladi. T17 va T28da faylni o'chirmang. Smoke testlar barcha BT talablarini tekshirmaydi.")
     OUTPUT.parent.mkdir(parents=True,exist_ok=True)
     doc=SimpleDocTemplate(str(OUTPUT),pagesize=A4,rightMargin=46,leftMargin=46,topMargin=53,bottomMargin=50,
                           title='CardLab - Python hakatoni: biznes talablar va BPMN',author='CardLab',pageCompression=1)
