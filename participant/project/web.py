@@ -87,19 +87,26 @@ def page(session):
       <title>CardLab · Python hakatoni</title><link rel="stylesheet" href="/style.css">
       <link rel="icon" href="data:,"></head><body>
       <header><a class="brand" href="/"><span class="brand-mark">C<span>↗</span></span>CardLab<span class="edition">PYTHON LAB</span></a>
-        <nav aria-label="Materiallar"><a href="/materials/BT.pdf" target="_blank" rel="noopener">BTni ochish ↗</a>
+        <nav aria-label="Materiallar"><button class="nav-conditions" type="button" popovertarget="conditions">Shartlar</button><a href="/materials/BT.pdf" target="_blank" rel="noopener">BTni ochish ↗</a>
         <a class="nav-download" href="/download/participant.zip">Loyihani yuklab olish ↓</a></nav></header>
-      <main><section class="intro"><div><div class="eyebrow"><span></span> MAKTAB HAKATONI · AMALIY MUHIT</div>
-        <h1>Kartalar bilan <span>tajriba qiling.</span></h1>
-        <p>1-shart: mavjud xatolarni to‘g‘rilang. 2-shart: Include commission funksiyasini qo‘shing.</p></div>
-        <div class="timebox"><strong>120<span> daqiqa</span></strong><small>2–3 kishilik jamoa uchun</small></div></section>
+      <section id="conditions" popover aria-labelledby="conditions-title">
+        <div class="conditions-heading"><h2 id="conditions-title">Hakaton shartlari</h2>
+          <button type="button" popovertarget="conditions" popovertargetaction="hide" aria-label="Shartlarni yopish">✕</button></div>
+        <article><span class="condition-number">1-shart</span><h3>Xatolarni to‘g‘rilash</h3>
+          <p>Mavjud karta amaliyotlaridagi xatolarni toping va tuzating: summa, karta holati, o‘tkazma, 1% komissiya, balans, tarix va JSON saqlash.</p>
+          <p>Include commission o‘chirilgan holatda <strong>T01–T20</strong> ssenariylarini tekshiring.</p></article>
+        <article><span class="condition-number">2-shart</span><h3>Include commission qo‘shish</h3>
+          <p>Komissiyani kiritilgan summaning ichidan olish funksiyasini qo‘shing. Masalan, 50 000 so‘mdan 500 so‘m komissiya olinadi, oluvchiga 49 500 so‘m tushadi.</p>
+          <p><strong>T21–T28</strong> ssenariylarini tekshiring va T01–T20 hamon o‘tishini tasdiqlang.</p></article>
+        <a class="conditions-link" href="/materials/BT.pdf" target="_blank" rel="noopener">Batafsil BTni ochish ↗</a>
+      </section>
+      <main>
         <section class="lab-tools" aria-label="Topshiriq materiallari va sinov holati">
           <a class="lab-tool" href="/materials/BT.pdf" target="_blank" rel="noopener"><span class="tool-symbol" aria-hidden="true">↗</span><span><strong>Biznes talablar</strong><small>PDF · 28 ta ssenariy</small></span></a>
           <a class="lab-tool" href="/materials/transfer-bpmn.svg" target="_blank" rel="noopener"><span class="tool-symbol" aria-hidden="true">↗</span><span><strong>BPMN jarayoni</strong><small>Pul o'tkazish chizmasi</small></span></a>
           <form method="post" action="/action">{field('reopen', csrf)}<button class="lab-tool" type="submit"><span class="tool-symbol" aria-hidden="true">↻</span><span><strong>Dasturni qayta ochish</strong><small>Saqlangan holatni yuklash</small></span></button></form>
           <form method="post" action="/action">{field('reset', csrf)}<button class="lab-tool" type="submit"><span class="tool-symbol" aria-hidden="true">⟲</span><span><strong>Boshidan boshlash</strong><small>Demo holatini tozalash</small></span></button></form>
         </section>
-        <div class="lab-note"><span class="note-symbol">i</span><p><strong>Har jamoa o‘z loyiha nusxasida ishlaydi.</strong> Tashkilotchi bergan ZIPni oching, kodni tuzating va loyiha, testlar hamda hisobotni topshiring. Yakunda har bir jamoa alohida baholanadi: 70 ball avtomatik tekshiruv + 30 ball hakam bahosi. Ushbu demo natijalari ataylab noto‘g‘ri chiqishi mumkin; faqat demo mablag‘ ishlatiladi.</p><span class="mode-label">XATOLI LOYIHA</span></div>
         {alert}
         <section aria-labelledby="cards-title"><div class="section-heading"><h2 id="cards-title">Mening kartalarim <span>03</span></h2>
           <p>Jami balans <strong>{money(total)} so'm</strong></p></div>

@@ -51,3 +51,18 @@
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Shartlar tugmasi va brauzerning ochiladigan paneli. */
+.nav-conditions{border:1px solid #c6ded6;border-radius:8px;padding:10px 15px;background:#edf5f1;color:var(--teal);font-size:inherit;font-weight:inherit;white-space:nowrap}
+.nav-conditions:hover{background:#e1efe8}
+#conditions{width:min(540px,calc(100vw - 36px));max-height:calc(100dvh - 48px);overflow:auto;padding:26px;border:1px solid var(--line);border-radius:16px;background:var(--white);color:var(--ink);box-shadow:0 24px 80px #143d3530}
+#conditions::backdrop{background:#172f3666}
+.conditions-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.conditions-heading h2{font-size:20px}
+.conditions-heading button{border:0;border-radius:7px;background:var(--bg);color:var(--muted);width:34px;height:34px;flex-shrink:0}
+#conditions article{border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:14px}
+.condition-number{font-size:11px;font-weight:700;color:var(--teal)}
+#conditions h3{font-size:16px;margin:8px 0 10px}
+#conditions p{font-size:13px;line-height:1.65;color:#61766f;margin:8px 0 0}
+.conditions-link{display:inline-block;font-size:12px;font-weight:650;color:var(--teal);padding:8px 0}
+@media(max-width:620px){header{height:auto;min-height:75px;flex-wrap:wrap;padding:16px 18px;gap:16px}nav{width:100%;justify-content:space-between;gap:10px}.nav-conditions{padding:8px 12px}#conditions{padding:20px}}
